@@ -1,0 +1,34 @@
+[
+    [
+        {"heading":"ID","type":"Int"},
+        {"heading":"Type","type":"Text"},
+        {"heading":"Date","type":"Date"},
+        {"heading":"Balance","type":"Currency"}
+    ],
+    [
+        {"heading":"ID","type":"Int"},
+        {"heading":"Date","type":"Date"},
+        {"heading":"Supplier","type":"Text"},
+        {"heading":"Reference","type":"Int"},
+        {"heading":"Total","type":"Currency"}
+    ],
+    [
+        {"heading":"ID","type":"Int"},
+        {"heading":"Date","type":"Date"},
+        {"heading":"Supplier","type":"Text"},
+        {"heading":"Total","type":"Currency"},
+        {"heading":"Type","type":"Text"}
+    ],
+    [
+        {"heading":"ReferenceID","type":"Int"},
+        {"heading":"Date","type":"Date"},
+        {"heading":"Item","type":"Text"},
+        {"heading":"Total","type":"Currency"}
+    ],
+    [
+        {"heading":"ID","type":"Int"},
+        {"heading":"ReferenceID","type":"Int"},
+        {"heading":"Type","type":"Text"},
+        {"heading":"Total","type":"Currency"}
+    ]
+]
