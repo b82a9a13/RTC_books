@@ -96,7 +96,7 @@
     <br>
     <div id="statistics" class="section">
         <h2 class="text-center">Statistics</h2>
-        <div class="text-center" style="display: flex">
+        <div class="statistics-inner-div">
             <div class="statistics-border">
                 <p class="statistics-title-p">Bank</p>
                 <p class="statistics-p">Total In: £
@@ -143,45 +143,47 @@
     <br>
     <div id="output" class="section">
         <h2 class="text-center">Output</h2>
-        <div class="text-center output-border">
-            <p class="output-title-p">Accounting</p>
-            <form action="./pdf.php?t=a" method="POST" class="output-form">
-                <select name="month" id="month">
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
-                <button type="submit">Download PDF</button>
-            </form>
-        </div>
-        <div class="text-center output-border">
-            <p class="output-title-p">Petty Cash</p>
-            <form action="./pdf.php?t=p" method="POST" class="output-form">
-                <select name="month" id="month">
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
-                <button type="submit">Download PDF</button>
-            </form>
+        <div class="output-inner-div">
+            <div class="output-border">
+                <p class="output-title-p">Accounting</p>
+                <form action="./pdf.php?t=a" method="POST" class="output-form">
+                    <select name="month" id="month">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <button type="submit">Download PDF</button>
+                </form>
+            </div>
+            <div class="output-border">
+                <p class="output-title-p">Petty Cash</p>
+                <form action="./pdf.php?t=p" method="POST" class="output-form">
+                    <select name="month" id="month">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <button type="submit">Download PDF</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>

@@ -177,11 +177,11 @@ function get_accounting_in_month($start, $end){
         $result = $connection->query($sql);
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                array_push($array,[$row['ID'],$row['Date'],$row['Supplier'],$row['Reference'],$row['Total']]);
+                array_push($array,[$row['ID'],date('d/m/Y',strtotime($row['Date'])),$row['Supplier'],$row['Reference'],$row['Total']]);
             }
-            $connection->close();
-            return $array;
         }
+        $connection->close();
+        return $array;
     }
 }
 
@@ -200,11 +200,11 @@ function get_accounting_out_month($start, $end){
         $result = $connection->query($sql);
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                array_push($array, [$row['ID'], $row['Date'], $row['Supplier'], $row['Total'], $row['Type']]);
+                array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Supplier'], $row['Total'], $row['Type']]);
             }
-            $connection->close();
-            return $array;
         }
+        $connection->close();
+        return $array;
     }
 }
 
@@ -226,9 +226,9 @@ function get_accounting_cf_month($start, $end){
                 while($row = $result->fetch_assoc()){
                     $total += $row['Balance'];
                 }
-                $connection->close();
-                return $total;
             }
+            $connection->close();
+            return $total;
         } else {
             $total = 0;
             $sql = "SELECT Total FROM accounting_in WHERE Date < '".$start."'";
@@ -275,9 +275,9 @@ function get_pettycash_in(){
             while($row = $result->fetch_assoc()){
                 $total += $row['Total'];
             }
-            $connection->close();
-            return $total;
         }
+        $connection->close();
+        return $total;
     }
 }
 
@@ -298,9 +298,9 @@ function get_pettycash_out(){
             while($row = $result->fetch_assoc()){
                 $total += $row['Total'];
             }
-            $connection->close();
-            return $total;
         }
+        $connection->close();
+        return $total;
     }
 }
 
@@ -389,5 +389,123 @@ function add_banktransaction($date, $supplier, $total, $type){
             $connection->close();
             return "exists";
         }
+    }
+}
+
+//Get petty cash in for the month
+function get_pettycash_in_month($start, $end){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{
+        $array = [];
+        $sql = "SELECT * FROM petty_cash_id WHERE Date >= '".$start."' AND Date <= '".$end."'";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, [date('d/m/Y',strtotime($row['Date'])), $row['Item'], $row['ReferenceID'],  $row['Total']]);
+            }
+        }
+        $connection->close();
+        return $array;
+    }
+}
+
+//Gett petty cash in type for the values provided
+function get_pettycash_in_type($values){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+        $array = [];
+        $sql = "SELECT * FROM petty_cash_type WHERE ReferenceID IN (";
+        $first = true;
+        foreach($values as $value){
+            if($first === true){
+                $sql .= "'".$value."'";
+                $first = false;
+            } else {
+                $sql .= ",'".$value."'";
+            }
+        }
+        $sql .= ")";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, [$row["ReferenceID"], $row["Type"], $row["Total"]]);
+            }
+        }
+        $connection->close();
+        return $array;
+    }
+}
+
+//Get petty cash in from accounting for the month
+function get_pettycash_into_month($start, $end){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+        $array = [];
+        $sql = "SELECT ID, Date, Total FROM accounting_out WHERE TYPE = 'Petty Cash' AND Date >= '".$start."' AND Date <= '".$end."'";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Total']]);
+            }
+        }
+        $connection->close();
+        return $array;
+    }
+}
+
+//Get petty cash in from accounting before the provided date
+function get_pettycash_in_before($date){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+        $balance = 0;
+        $sql = "SELECT Balance FROM balances WHERE Type = 'Petty Cash'";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $balance = $row['Balance'];
+            }
+        }
+        $totalIn = 0;
+        $sql = "SELECT Total FROM accounting_out WHERE Type = 'Petty Cash' AND Date < '".$date."'";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $totalIn += $row['Total'];
+            }
+        }
+        $totalOut = 0;
+        $sql = "SELECT Total FROM petty_cash_id WHERE Date < '".$date."'";
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $totalOut += $row['Total'];
+            }
+        }
+        $connection->close();
+        return (($balance + $totalIn) - $totalOut);
     }
 }

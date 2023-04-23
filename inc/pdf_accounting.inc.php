@@ -39,7 +39,6 @@ if(isset($_POST['month'])){
                 </th>   
             </tbody>
         </table>';
-    
         $pdf->writeHTML($html, true, false, false, false, '');
         $accountingOut = get_accounting_out_month($start, $end);
         $html = '<table border="1" cellpadding="2"><thead><tr>

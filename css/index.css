@@ -54,3 +54,10 @@ td, th{
     display: flex;
     width: 300px;
 }
+.output-inner-div, .statistics-inner-div{
+    display:flex;    
+    margin-left: auto;
+    margin-right: auto;
+    width:610px;
+    text-align: center;
+}
