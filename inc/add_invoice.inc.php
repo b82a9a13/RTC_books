@@ -1,6 +1,6 @@
 <?php
+//Add invoice to data base and validate the input
 require_once('./../lib.php');
-
 if(isset($_POST['date']) && isset($_POST['supplier']) && isset($_POST['reference']) && isset($_POST['total'])){
     $date = $_POST['date'];
     $supplier = $_POST['supplier'];

@@ -1,3 +1,4 @@
+<?php //Index for books page ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
     <h1 class="text-center">Books</h1>
@@ -30,7 +32,7 @@
             <button id="add receipt" class="btn-primary btn" onclick="input('Add Receipt')">Add Receipt</button>
             <button id="add bank transaction" class="btn-primary btn" onclick="input('Add Bank Transaction')">Add Bank Transaction</button>
         </div><br>
-        <div class="input_forms">
+        <div class="input-forms">
             <div class="input-form-div">
                 <form action="" id="add invoice form" class="text-center input-form input-form-div-form">
                     <p class="text-center form-title-p">Add Invoice</p>                
@@ -95,7 +97,7 @@
     <div id="statistics" class="section">
         <h2 class="text-center">Statistics</h2>
         <div class="text-center" style="display: flex">
-            <div class="statistics-border" style="width:300px;">
+            <div class="statistics-border">
                 <p class="statistics-title-p">Bank</p>
                 <p class="statistics-p">Total In: £
                 <?php 
@@ -116,7 +118,7 @@
                     ?>
                 </p>
             </div>
-            <div class="statistics-border" style="width:300px;">
+            <div class="statistics-border">
                 <p class="statistics-title-p">Petty Cash</p>
                 <p class="statistics-p">Total In: £
                     <?php 
@@ -141,8 +143,29 @@
     <br>
     <div id="output" class="section">
         <h2 class="text-center">Output</h2>
-        <div class="text-center" id="output_form_id">
-            <form action="./pdf.php" method="POST">
+        <div class="text-center output-border">
+            <p class="output-title-p">Accounting</p>
+            <form action="./pdf.php?t=a" method="POST" class="output-form">
+                <select name="month" id="month">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <button type="submit">Download PDF</button>
+            </form>
+        </div>
+        <div class="text-center output-border">
+            <p class="output-title-p">Petty Cash</p>
+            <form action="./pdf.php?t=p" method="POST" class="output-form">
                 <select name="month" id="month">
                     <option value="1">January</option>
                     <option value="2">February</option>
@@ -164,60 +187,3 @@
 </body>
 <script src="./js/index.js"></script>
 </html>
-<style>
-    body{
-        background-color: lightgrey;
-    }
-    td, th{
-        padding: 1rem;
-    }
-    .section{
-        background: white; 
-        padding: 1rem;
-    }
-    .input-div{
-        display: flex;
-        margin-bottom: 1rem;
-    }
-    .input-form{
-        border: 2px solid #337ab7;
-        border-radius: 5px;
-        padding: 1rem;
-    }
-    .statistics-border{
-        border: 2px solid #337ab7;
-        border-radius: 5px;
-        padding: 1rem;
-        margin-right: 1rem;
-    }
-    .input-p{
-        width: 35%;
-    }
-    .statistics-p, .input-p{
-        font-size: 20px;
-    }
-    .input-btn{
-        width: 100%;
-    }
-    .input-input{
-        width: 65%;
-    }
-    .input-form-div{
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .form-title-p, .statistics-title-p{
-        font-size: 25px;
-        color: #337ab7;
-    }
-    .input-form-div-form{
-        width: 300px;
-        text-align: left;
-        display: none;
-        margin-right: 1rem;
-    }
-    .input_forms{
-        display: flex;
-        width: 300px;
-    }
-</style>

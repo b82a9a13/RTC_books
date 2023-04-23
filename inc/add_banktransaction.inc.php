@@ -1,6 +1,6 @@
 <?php
+//Add a bank transaction to the database and validate input
 require_once('./../lib.php');
-
 if(isset($_POST['date']) && isset($_POST['supplier']) && isset($_POST['total']) && isset($_POST['type'])){
     $date = $_POST['date'];
     $supplier = $_POST['supplier'];

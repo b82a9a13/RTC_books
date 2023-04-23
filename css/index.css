@@ -1,0 +1,56 @@
+body{
+    background-color: lightgrey;
+}
+td, th{
+    padding: 1rem;
+}
+.section{
+    background: white; 
+    padding: 1rem;
+}
+.input-div{
+    display: flex;
+    margin-bottom: 1rem;
+}
+.input-form{
+    border: 2px solid #337ab7;
+    border-radius: 5px;
+    padding: 1rem;
+}
+.statistics-border, .output-border{
+    border: 2px solid #337ab7;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-right: 1rem;
+    width:300px;
+}
+.input-p{
+    width: 35%;
+}
+.statistics-p, .input-p{
+    font-size: 20px;
+}
+.input-btn{
+    width: 100%;
+}
+.input-input{
+    width: 65%;
+}
+.input-form-div{
+    margin-left: auto;
+    margin-right: auto;
+}
+.form-title-p, .statistics-title-p, .output-title-p{
+    font-size: 25px;
+    color: #337ab7;
+}
+.input-form-div-form{
+    width: 300px;
+    text-align: left;
+    display: none;
+    margin-right: 1rem;
+}
+.input-forms{
+    display: flex;
+    width: 300px;
+}

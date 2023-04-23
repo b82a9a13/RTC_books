@@ -1,6 +1,6 @@
 <?php
+//Ouput table as json and validate input
 require_once('./../lib.php');
-
 if(isset($_POST['type'])){
     $type = $_POST['type'];
     if($type === 'Balance'){
