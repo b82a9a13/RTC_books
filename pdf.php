@@ -10,6 +10,8 @@ if(isset($_GET['t'])){
         include('./inc/pdf_accounting.inc.php');
     } elseif($t === 'p'){
         include('./inc/pdf_pettycash.inc.php');
+    } elseif($t === 'y'){
+        include('./inc/pdf_yearoverview.inc.php');
     }
 }
 $pdf->Output('pdf.pdf', 'D');

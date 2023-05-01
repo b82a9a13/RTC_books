@@ -82,8 +82,12 @@ if(isset($_POST['month'])){
             <th width="75px">C, F</th>
         </tr></thead><tbody>';
         $pettycashInA = get_pettycash_into_month($start, $end);
-        foreach($pettycashInA as $pcInA){
-            $html .= '<tr><td width="75px">'.$pcInA[0].'</td><td width="75px">'.$pcInA[1].'</td><td width="75px">£'.$pcInA[2].'</td><td width="75px">£'.(($balanceVals-$totalOut)+$pcInA[2]).'</td></tr>';
+        if(!empty($pettycashInA)){
+            foreach($pettycashInA as $pcInA){
+                $html .= '<tr><td width="75px">'.$pcInA[0].'</td><td width="75px">'.$pcInA[1].'</td><td width="75px">£'.$pcInA[2].'</td><td width="75px">£'.(($balanceVals-$totalOut)+$pcInA[2]).'</td></tr>';
+            }
+        } else {
+            $html .= '<tr><td width="75px"></td><td width="75px"></td><td width="75px"></td><td width="75px">£'.$balanceVals-$totalOut.'</td></tr>';
         }
         $html .= '</tbody></table>';
         $pdf->writeHTML($html, true, false, false, false, '');

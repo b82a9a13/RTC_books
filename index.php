@@ -147,40 +147,31 @@
             <div class="output-border">
                 <p class="output-title-p">Accounting</p>
                 <form action="./pdf.php?t=a" method="POST" class="output-form">
-                    <select name="month" id="month">
-                        <option value="1">January</option>
-                        <option value="2">February</option>
-                        <option value="3">March</option>
-                        <option value="4">April</option>
-                        <option value="5">May</option>
-                        <option value="6">June</option>
-                        <option value="7">July</option>
-                        <option value="8">August</option>
-                        <option value="9">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-                    </select>
-                    <button type="submit">Download PDF</button>
+                    <?php 
+                        //Create month selection and download, then output to page
+                        $monthSelect = '<select name="month" id="month">';
+                        $msInt = 1;
+                        foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $msTxt){
+                            $monthSelect .= '<option value="'.$msInt.'">'.$msTxt.'</option>';
+                            $msInt++;
+                        }
+                        $monthSelect .= '</select><button type="submit">Download PDF</button>';
+                        echo($monthSelect);
+                    ?>
                 </form>
             </div>
             <div class="output-border">
                 <p class="output-title-p">Petty Cash</p>
                 <form action="./pdf.php?t=p" method="POST" class="output-form">
-                    <select name="month" id="month">
-                        <option value="1">January</option>
-                        <option value="2">February</option>
-                        <option value="3">March</option>
-                        <option value="4">April</option>
-                        <option value="5">May</option>
-                        <option value="6">June</option>
-                        <option value="7">July</option>
-                        <option value="8">August</option>
-                        <option value="9">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-                    </select>
+                    <?php 
+                        echo($monthSelect);
+                    ?>
+                </form>
+            </div>
+            <div class="output-border">
+                <p class="output-title-p">Year Overview</p>
+                <form action="./pdf.php?t=y" method="POST" class="output-form">
+                    <input type="number" min="2022" max="2023" id="year" name="year" value="2022">
                     <button type="submit">Download PDF</button>
                 </form>
             </div>
