@@ -11,6 +11,7 @@
 </head>
 <body>
     <h1 class="text-center">Books</h1>
+    <?php //Section for displaying data in tables ?>
     <div id="tables" class="section">
         <h2 class="text-center">Tables</h2>
         <div class="text-center">
@@ -25,6 +26,7 @@
         </div>
     </div>
     <br>
+    <?php //Section for inputting data into the database ?>
     <div id="input" class="section">
         <h2 class="text-center">Input</h2>
         <div class="text-center">
@@ -39,7 +41,7 @@
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="incoive_date"></div>
                     <div class="input-div"><p class="input-p">Supplier:</p><input type="text" class="input-input" id="invoice_supplier"></div>
                     <div class="input-div"><p class="input-p">Reference:</p><input type="number" class="input-input" id="invoice_reference"></div>
-                    <div class="input-div"><p class="input-p">Total:</p><input type="number" class="input-input" id="invoice_total"></div>
+                    <div class="input-div"><p class="input-p">Total:</p><input type="number" class="input-input" id="invoice_total" step="0.01"></div>
                     <p style="display: none;font-size:25px;" id="invoice_form_error"></p>
                     <button type="submit" id="add invoice form submit" class="input-btn btn-primary btn">Submit</button>
                 </form>
@@ -49,7 +51,7 @@
                     <p class="text-center form-title-p">Add Receipt</p>
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="receipt_date"></div>
                     <div class="input-div"><p class="input-p">Item:</p><input type="text" class="input-input" id="receipt_item"></div>
-                    <div class="input-div"><p class="input-p">Total:</p><input type="number" class="input-input" id="receipt_total"></div>
+                    <div class="input-div"><p class="input-p">Total:</p><input type="number" class="input-input" id="receipt_total" step="0.01"></div>
                     <div class="input-div"><p class="input-p">Type:</p>
                         <select id="receipt_type">
                             <option value="" selected disabled hidden>Choose a type</option>
@@ -72,7 +74,7 @@
                     <p class="text-center form-title-p">Add Bank Transaction</p>
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="banktransaction_date"></div>
                     <div class="input-div"><p class="input-p">Supplier:</p><input type="text" class="input-input" id="banktransaction_supplier"></div>
-                    <div class="input-div"><p class="input-p">Total:</p><input type="text" class="input-input" id="banktransaction_total"></div>
+                    <div class="input-div"><p class="input-p">Total:</p><input type="number" step="0.01" class="input-input" id="banktransaction_total"></div>
                     <div class="input-div"><p class="input-p">Type:</p>
                         <select id="banktransaction_type">
                             <option value="" selected disabled hidden>Choose a type</option>
@@ -94,6 +96,7 @@
         </div>
     </div>
     <br>
+    <?php //Section for displaying statistics for the year ?>
     <div id="statistics" class="section">
         <h2 class="text-center">Statistics</h2>
         <div class="statistics-inner-div">
@@ -141,6 +144,7 @@
         </div>
     </div>
     <br>
+    <?php //Section for outputting data into a PDF ?>
     <div id="output" class="section">
         <h2 class="text-center">Output</h2>
         <div class="output-inner-div">
@@ -178,5 +182,6 @@
         </div>
     </div>
 </body>
+<?php //Include JavaScript ?>
 <script src="./js/index.js"></script>
 </html>

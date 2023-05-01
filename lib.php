@@ -509,3 +509,17 @@ function get_pettycash_in_before($date){
         return (($balance + $totalIn) - $totalOut);
     }
 }
+
+//Get year overview data for Year & Month table in year overview pdf (Petty Cash)
+function get_pc_yearoverview_ym_data($year){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+
+    }
+}
