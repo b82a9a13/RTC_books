@@ -190,6 +190,7 @@ if(isset($_POST['month'])){
             <th width="100px">£'.($totalInAccount - $totals->TotalValue).'</th>
         </tr></thead></table>';
         $pdf->writeHTML($html, false, false, false, false, '');
+        $filename = 'Accounting '.$month->format('m-Y');
     }
 }
 ?>

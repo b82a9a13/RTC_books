@@ -91,6 +91,7 @@ if(isset($_POST['month'])){
         }
         $html .= '</tbody></table>';
         $pdf->writeHTML($html, true, false, false, false, '');
+        $filename = 'Petty Cash '.$month->format('m-Y');
     }
 }
 ?>

@@ -520,6 +520,100 @@ function get_pc_yearoverview_ym_data($year){
     if($connection->connect_error){
         return "connection error";
     } else{ 
+        $finArray = [];
+        $m = 4;
+        $next = false;
+        for($i = 0; $i < 12; $i++){
+            $tm1 = "04";
+            $tm2 = "05";
+            if($m == 13){
+                $m = 1;
+                $next = true;
+            }
+            $ty1 = ($next) ? '2023' : '2022';
+            $ty2 = ($next) ? '2023' : '2022';
+            if($m < 9){
+                $tm1 = "0".$m;               
+                $tm2 = "0".$m+1;
+            } elseif($m === 9){
+                $tm1 = "0".$m;
+                $tm2 = "10";
+            } elseif($m === 12){
+                $tm1 = $m;
+                $tm2 = '01';
+                $ty2 = '2023';
+            } elseif($m > 9){
+                $tm1 = $m;
+                $tm2 = $m+1;
+            }
+            $sql = "SELECT petty_cash_id.Total, petty_cash_type.Type FROM petty_cash_id INNER JOIN petty_cash_type ON petty_cash_id.ReferenceID = petty_cash_type.ReferenceID WHERE petty_cash_id.Date >= '".$ty1."-".$tm1."-01' AND petty_cash_id.Date < '".$ty2."-".$tm2."-01'";
+            $result = $connection->query($sql);
+            $array = [];
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    if(!isset($array[$row['Type']])){
+                        $array[$row['Type']] = 0;
+                    }
+                    $array[$row['Type']] += $row['Total'];
+                }
+            }
+            array_push($finArray, [$ty1."-".$tm1,$array]);
+            $m++;
+        }
+        return $finArray;
+    }
+}
 
+//Get end of year for Year & Month table in the year overview pdf (Accounting)
+function get_ac_yearoverview_ym_data($year){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+        $finArray = [];
+        $m = 4;
+        $next = false;
+        for($i = 0; $i < 12; $i++){
+            $tm1 = "04";
+            $tm2 = "05";
+            if($m == 13){
+                $m = 1;
+                $next = true;
+            }
+            $ty1 = ($next) ? '2023' : '2022';
+            $ty2 = ($next) ? '2023' : '2022';
+            if($m < 9){
+                $tm1 = "0".$m;               
+                $tm2 = "0".$m+1;
+            } elseif($m === 9){
+                $tm1 = "0".$m;
+                $tm2 = "10";
+            } elseif($m === 12){
+                $tm1 = $m;
+                $tm2 = '01';
+                $ty2 = '2023';
+            } elseif($m > 9){
+                $tm1 = $m;
+                $tm2 = $m+1;
+            }
+            $sql = "SELECT Total, Type FROM accounting_out WHERE Date >= '".$ty1."-".$tm1."-01' AND Date < '".$ty2."-".$tm2."-01'";
+            $result = $connection->query($sql);
+            $array = [];
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    if(!isset($array[$row['Type']])){
+                        $array[$row['Type']] = 0;
+                    }
+                    $array[$row['Type']] += $row['Total'];
+                }
+            }
+            array_push($finArray, [$ty1."-".$tm1,$array]);
+            $m++;
+        }
+        return $finArray;
     }
 }

@@ -4,6 +4,7 @@ $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 
 $pdf->AddPage('L',"A4");
 //validate get and include the related php file
+$filename = 'pdf';
 if(isset($_GET['t'])){
     $t = $_GET['t'];
     if($t === 'a'){
@@ -14,4 +15,4 @@ if(isset($_GET['t'])){
         include('./inc/pdf_yearoverview.inc.php');
     }
 }
-$pdf->Output('pdf.pdf', 'D');
+$pdf->Output($filename.'.pdf', 'D');
