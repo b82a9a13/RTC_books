@@ -1,4 +1,6 @@
-<?php //Index for books page ?>
+<?php //Index for books page 
+include("./require_login.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +12,9 @@
     <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
+    <div class='text-center'>
+        <button class='btn btn-primary' id="logout_btn">Log out</button>
+    </div>
     <h1 class="text-center">Books</h1>
     <?php //Section for displaying data in tables ?>
     <div id="tables" class="section">

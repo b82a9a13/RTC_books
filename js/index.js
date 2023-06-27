@@ -125,3 +125,17 @@ document.getElementById('add bank transaction form').addEventListener("submit", 
     };
     xhr.send(`date=${date}&supplier=${supplier}&total=${total}&type=${type}`);
 })
+document.getElementById('logout_btn').addEventListener('click', ()=>{
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', './inc/logout_inc.php', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        if(this.status == 200){
+            let text = JSON.parse(this.responseText);
+            if(text['return']){
+                window.location.reload();
+            }
+        }
+    }
+    xhr.send();
+})

@@ -617,3 +617,80 @@ function get_ac_yearoverview_ym_data($year){
         return $finArray;
     }
 }
+
+//Check if a user account exists
+function user_exists(){
+    $database = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'books';
+    $connection = new mysqli($database, $username, $password, $dbname);
+    if($connection->connect_error){
+        return "connection error";
+    } else{ 
+        $sql = 'SELECT * FROM user';
+        $result = $connection->query($sql);
+        if($result->num_rows > 0){
+            $connection->close();
+            return true;
+        } else {
+            $connection->close();
+            return false;
+        }
+    }
+}
+
+//Create a new user
+function create_user($array){
+    if(user_exists() == false){
+        $database = 'localhost';
+        $username = 'root';
+        $password = '';
+        $dbname = 'books';
+        $connection = new mysqli($database, $username, $password, $dbname);
+        if($connection->connect_error){
+            return false;
+        } else{ 
+            $sql = "INSERT INTO user (username, password, firstname, lastname, email) VALUES ('".$array[0]."','".$array[1]."','".$array[2]."','".$array[3]."','".$array[4]."')";
+            $result = $connection->query($sql);
+            $connection->close();
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
+//Login a existing user
+function login_user($array){
+    if(user_exists() == true){
+        $database = 'localhost';
+        $username = 'root';
+        $password = '';
+        $dbname = 'books';
+        $connection = new mysqli($database, $username, $password, $dbname);
+        if($connection->connect_error){
+            return false;
+        } else{ 
+            $sql = 'SELECT password FROM user WHERE username = "'.$array[0].'"';
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    if(password_verify($array[1], $row['password'])){
+                        $connection->close();
+                        return true;
+                    } else {
+                        $connection->close();
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                $connection->close();
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+}
