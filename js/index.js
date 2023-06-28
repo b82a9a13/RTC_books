@@ -49,85 +49,171 @@ function input(type){
 }
 document.getElementById('add invoice form').addEventListener("submit", (e) => {
     e.preventDefault();
-    let date = document.getElementById('incoive_date').value
-    let supplier = document.getElementById('invoice_supplier').value
-    let reference = document.getElementById('invoice_reference').value
-    let total = document.getElementById('invoice_total').value
+    let date = document.getElementById('incoive_date')
+    let supplier = document.getElementById('invoice_supplier')
+    let reference = document.getElementById('invoice_reference')
+    let total = document.getElementById('invoice_total')
+    date.style.border = ''
+    supplier.style.border = ''
+    reference.style.border = ''
+    total.style.border = ''
     const errorText = document.getElementById('invoice_form_error')
+    errorText.innerText = ''
+    errorText.style.display = 'none'
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./inc/add_invoice.inc.php", true)
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     xhr.onreadystatechange = function(){
         if(this.status == 200){
             let text = JSON.parse(this.responseText)
+            errorText.innerText = ''
+            if(text['date']){
+                date.style.border = '2px solid red'
+                errorText.innerText += text['date']+' |'
+            }
+            if(text['supplier']){
+                supplier.style.border = '2px solid red'
+                errorText.innerText += text['supplier']+' |'
+            }
+            if(text['reference']){
+                reference.style.border = '2px solid red'
+                errorText.innerText += text['reference']+' |'
+            }
+            if(text['total']){
+                total.style.border = '2px solid red'
+                errorText.innerText += text['total']+' |'
+            }
             if(text['success'] == true){
-                document.getElementById('incoive_date').value = ''
-                document.getElementById('invoice_supplier').value = ''
-                document.getElementById('invoice_reference').value = ''
-                document.getElementById('invoice_total').value = ''
+                date.value = ''
+                supplier.value = ''
+                reference.value = ''
+                total.value = ''
                 errorText.innerText = 'Success'
                 errorText.style.display = 'block'
                 errorText.className = 'text-success'
+                errorText.style.color = ''
+            } else {
+                errorText.innerText = errorText.innerText.slice(0, -1)
+                errorText.style.display = 'block'
+                errorText.className = ''
+                errorText.style.color = 'red'
             }
         }
     }
-    xhr.send(`date=${date}&supplier=${supplier}&reference=${reference}&total=${total}`)
+    xhr.send(`date=${date.value}&supplier=${supplier.value}&reference=${reference.value}&total=${total.value}`)
 })
 document.getElementById('add receipt form').addEventListener("submit", (e) => {
     e.preventDefault();
-    let date = document.getElementById('receipt_date').value;
-    let item = document.getElementById('receipt_item').value;
-    let total = document.getElementById('receipt_total').value;
-    let type = document.getElementById('receipt_type').value;
+    let date = document.getElementById('receipt_date');
+    let item = document.getElementById('receipt_item');
+    let total = document.getElementById('receipt_total');
+    let type = document.getElementById('receipt_type');
+    date.style.border = '';
+    item.style.border = '';
+    total.style.border = '';
+    type.style.border = '';
     const errorText = document.getElementById('receipt_form_error');
+    errorText.innerText = '';
+    errorText.style.display = '';
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./inc/add_receipt.inc.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function(){
         if(this.status == 200){
             let text = JSON.parse(this.responseText);
+            errorText.innerText = "";
+            if(text['date']){
+                date.style.border = '2px solid red';
+                errorText.innerText += text['date'] + " |";
+            }
+            if(text['item']){
+                item.style.border = '2px solid red';
+                errorText.innerText += text['item'] + " |";
+            }
+            if(text['total']){
+                total.style.border = '2px solid red';
+                errorText.innerText += text['total'] + " |";
+            }
+            if(text['type']){
+                type.style.border = '2px solid red';
+                errorText.innerText += text['type'] + " |";
+            }
             if(text['success'] == true){
-                document.getElementById('receipt_date').value = '';
-                document.getElementById('receipt_item').value = '';
-                document.getElementById('receipt_total').value = '';
-                document.getElementById('receipt_type').value = '';
+                date.value = '';
+                item.value = '';
+                total.value = '';
+                type.value = '';
                 errorText.innerText = 'Success';
                 errorText.style.display = 'block';
                 errorText.className = 'text-success';
+                errorText.style.color = ''
+            } else {
+                errorText.innerText = errorText.innerText.slice(0, -1)
+                errorText.style.display = 'block'
+                errorText.className = ''
+                errorText.style.color = 'red'
             }
         }
     };
-    xhr.send(`date=${date}&item=${item}&total=${total}&type=${type}`);
+    xhr.send(`date=${date.value}&item=${item.value}&total=${total.value}&type=${type.value}`);
 });
 document.getElementById('add bank transaction form').addEventListener("submit", (e) => {
     e.preventDefault();
-    let date = document.getElementById('banktransaction_date').value;
-    let supplier = document.getElementById('banktransaction_supplier').value;
-    let total = document.getElementById('banktransaction_total').value;
-    let type = document.getElementById('banktransaction_type').value;
+    let date = document.getElementById('banktransaction_date');
+    let supplier = document.getElementById('banktransaction_supplier');
+    let total = document.getElementById('banktransaction_total');
+    let type = document.getElementById('banktransaction_type');
+    date.style.border = '';
+    supplier.style.border = '';
+    total.style.border = '';
+    type.style.border = '';
     const errorText = document.getElementById('banktransaction_form_error');
+    errorText.innerText = '';
+    errorText.style.display = '';
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./inc/add_banktransaction.inc.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function(){
         if(this.status == 200){
             let text = JSON.parse(this.responseText);
+            errorText.innerText = "";
+            if(text['date']){
+                date.style.border = '2px solid red';
+                errorText.innerText += text['date'] + ' |';
+            }
+            if(text['supplier']){
+                supplier.style.border = '2px solid red';
+                errorText.innerText += text['supplier'] + ' |';
+            }
+            if(text['total']){
+                total.style.border = '2px solid red';
+                errorText.innerText += text['total'] + ' |';
+            }
+            if(text['type']){
+                type.style.border = '2px solid red';
+                errorText.innerText += text['type'] + ' |';
+            }
             if(text['success'] == true){
-                document.getElementById('banktransaction_date').value = '';
-                document.getElementById('banktransaction_supplier').value = '';
-                document.getElementById('banktransaction_total').value = '';
-                document.getElementById('banktransaction_type').value = '';
+                date.value = '';
+                supplier.value = '';
+                total.value = '';
+                type.value = '';
                 errorText.innerText = 'Success';
                 errorText.style.display = 'block';
                 errorText.className = 'text-success';
+            } else {
+                errorText.innerText = errorText.innerText.slice(0, -1)
+                errorText.style.display = 'block'
+                errorText.className = ''
+                errorText.style.color = 'red'
             }
         }
     };
-    xhr.send(`date=${date}&supplier=${supplier}&total=${total}&type=${type}`);
+    xhr.send(`date=${date.value}&supplier=${supplier.value}&total=${total.value}&type=${type.value}`);
 })
 document.getElementById('logout_btn').addEventListener('click', ()=>{
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', './inc/logout_inc.php', true);
+    xhr.open('POST', './inc/logout.inc.php', true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function(){
         if(this.status == 200){

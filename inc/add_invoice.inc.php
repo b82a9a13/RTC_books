@@ -6,35 +6,35 @@ if(isset($_POST['date']) && isset($_POST['supplier']) && isset($_POST['reference
     $supplier = $_POST['supplier'];
     $reference = $_POST['reference'];
     $total = $_POST['total'];
-    $error = false;
     $errors = [];
     if(!empty($date)){
         $date = strtotime($date);
         if(!preg_match("/^[0-9]*$/", $date) || empty($date)){
-            $error = true;
-            $errors['date'] = true;
+            $errors['date'] = 'Invalid date';
         }
     } else {
-        $error = true;
-        $errors['date'] = true;
+        $errors['date'] = 'No date';
     }
-    if(!empty($supplier) && !preg_match("/^[a-z A-Z]*$/", $supplier) || empty($supplier)){
-        $error = true;
-        $errors['supplier'] = true;
+    if(empty($supplier)){
+        $errors['supplier'] = 'No supplier';
+    } elseif(!empty($supplier) && !preg_match("/^[a-z A-Z]*$/", $supplier)){
+        $errors['supplier'] = 'Invalid supplier values: '.preg_replace("/[a-z A-Z]/",'',$supplier);
     }
-    if(!empty($reference) && !preg_match("/^[0-9]*$/", $reference) || empty($reference)){
-        $error = true;
-        $errors['reference'] = true;
+    if(empty($reference)){
+        $errors['reference'] = 'No reference';
+    } elseif(!empty($reference) && !preg_match("/^[0-9]*$/", $reference)){
+        $errors['reference'] = 'Invalid reference values: '.preg_replace("/[0-9]/",'',$reference);
     }
-    if(!empty($total) && !preg_match("/^[0-9 .]*$/", $total) || empty($total)){
-        $error = true;
-        $errors['total'] = true;
+    if(empty($total)){
+        $errors['total'] = 'No Total';
+    } elseif(!empty($total) && !preg_match("/^[0-9.]*$/", $total) || empty($total)){
+        $errors['total'] = 'Invalid total values: '.preg_replace("/[0-9.]/",'',$total);
     }
-    if($error === false){
+    if($errors === []){
         add_invoice($date, $supplier, $reference, $total);
         $success['success'] = true;
         echo(json_encode($success));
-    } elseif($error === true){
+    } elseif($errors != []){
         echo(json_encode($errors));
     }
 }

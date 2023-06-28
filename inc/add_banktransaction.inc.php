@@ -6,36 +6,34 @@ if(isset($_POST['date']) && isset($_POST['supplier']) && isset($_POST['total']) 
     $supplier = $_POST['supplier'];
     $total = $_POST['total'];
     $type = $_POST['type'];
-    $error = false;
     $errors = [];
     if(!empty($date)){
         $date = strtotime($date);
         if(!preg_match("/^[0-9]*$/", $date) || empty($date)){
-            $error = true;
-            $errors['date'] = true;
+            $errors['date'] = 'Invalid date';
         }
     } else {
-        $error = true;
-        $errors['date'] = true;
+        $errors['date'] = 'No date';
     }
-    if(!empty($supplier) && !preg_match("/^[a-z A-Z 0-9]*$/", $supplier) || empty($supplier)){
-        $error = true;
-        $errors['supplier'] = true;
+    if(empty($supplier)){
+        $errors['supplier'] = 'No supplier';
+    } elseif(!empty($supplier) && !preg_match("/^[a-z A-Z0-9]*$/", $supplier)){
+        $errors['supplier'] = 'Invalid supplier values: '.preg_replace("/[a-z A-Z0-9]/",'',$supplier);
     }
-    if(!empty($total) && !preg_match("/^[0-9 .]*$/", $total) || empty($total)){
-        $error = true;
-        $errors['total'] = true;
+    if(empty($total)){
+        $errors['total'] = 'No total';
+    } elseif(!empty($total) && !preg_match("/^[0-9.]*$/", $total)){
+        $errors['total'] = 'Invalid total values: '.preg_replace("/[0-9.]/",'',$total);
     }
     $typeOpt = ['National Insurance','Tool Hire','Drawings','Petty Cash','Travel and Motor Exp','Phone','Protective Clothing','Material','Sundry'];
     if(!empty($type) && !in_array($type, $typeOpt) || empty($type)){
-        $error = true;
-        $errors['type'] = true;
+        $errors['type'] = 'Invalid type';
     }
-    if($error === false){
+    if($errors === []){
         add_banktransaction($date, $supplier, $total, $type);
         $success['success'] = true;
         echo(json_encode($success));
-    } elseif($error === true){
+    } elseif($errors != []){
         echo(json_encode($errors));
     }
 }
