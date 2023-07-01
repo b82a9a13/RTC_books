@@ -1,12 +1,16 @@
 <?php
-
-//Used to query a table and return an array
-function query_table($table, $params){
+//Function which must contain the database, username, password and db name for it to work
+function db_connect(){
     $database = 'localhost';
     $username = 'root';
     $password = '';
     $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    return new mysqli($database, $username, $password, $dbname);
+}
+
+//Used to query a table and return an array
+function query_table($table, $params){
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -57,11 +61,7 @@ function Petty_cash_type_all(){
 
 //Adds a invoice to the database
 function add_invoice($date, $supplier, $reference, $total){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
         return "connection error";
@@ -92,11 +92,7 @@ function add_invoice($date, $supplier, $reference, $total){
 
 //Get the total amount put in
 function total_money_input(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -116,11 +112,7 @@ function total_money_input(){
 
 //Get the total amount outputted
 function total_money_output(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -140,11 +132,7 @@ function total_money_output(){
 
 //Output Initial Bank Balance
 function initial_bank_balance(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -164,11 +152,7 @@ function initial_bank_balance(){
 
 //Get accounting in for the month
 function get_accounting_in_month($start, $end){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else {
@@ -187,11 +171,7 @@ function get_accounting_in_month($start, $end){
 
 //Get accounting out for the month
 function get_accounting_out_month($start, $end){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else {
@@ -210,11 +190,7 @@ function get_accounting_out_month($start, $end){
 
 //Get accounting carry forward for the month
 function get_accounting_cf_month($start, $end){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else {
@@ -260,11 +236,7 @@ function get_accounting_cf_month($start, $end){
 
 //Get Total petty cash in
 function get_pettycash_in(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -283,11 +255,7 @@ function get_pettycash_in(){
 
 //Get Total petty cash out
 function get_pettycash_out(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -306,11 +274,7 @@ function get_pettycash_out(){
 
 //Get initial petty cash balance
 function initial_pettycash_balance(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -330,11 +294,7 @@ function initial_pettycash_balance(){
 
 //Add receipt to database
 function add_receipt($date, $item, $total, $type){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
         return "connection error";
@@ -363,11 +323,7 @@ function add_receipt($date, $item, $total, $type){
 
 //Add bank transaction to database
 function add_banktransaction($date, $supplier, $total, $type){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
         return "connection error";
@@ -394,11 +350,7 @@ function add_banktransaction($date, $supplier, $total, $type){
 
 //Get petty cash in for the month
 function get_pettycash_in_month($start, $end){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{
@@ -417,11 +369,7 @@ function get_pettycash_in_month($start, $end){
 
 //Gett petty cash in type for the values provided
 function get_pettycash_in_type($values){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -450,11 +398,7 @@ function get_pettycash_in_type($values){
 
 //Get petty cash in from accounting for the month
 function get_pettycash_into_month($start, $end){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -473,11 +417,7 @@ function get_pettycash_into_month($start, $end){
 
 //Get petty cash in from accounting before the provided date
 function get_pettycash_in_before($date){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -512,11 +452,7 @@ function get_pettycash_in_before($date){
 
 //Get year overview data for Year & Month table in year overview pdf (Petty Cash)
 function get_pc_yearoverview_ym_data($year){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -530,8 +466,8 @@ function get_pc_yearoverview_ym_data($year){
                 $m = 1;
                 $next = true;
             }
-            $ty1 = ($next) ? '2023' : '2022';
-            $ty2 = ($next) ? '2023' : '2022';
+            $ty1 = ($next) ? $year+1 : $year;
+            $ty2 = ($next) ? $year+1 : $year;
             if($m < 9){
                 $tm1 = "0".$m;               
                 $tm2 = "0".$m+1;
@@ -541,7 +477,7 @@ function get_pc_yearoverview_ym_data($year){
             } elseif($m === 12){
                 $tm1 = $m;
                 $tm2 = '01';
-                $ty2 = '2023';
+                $ty2 = $year+1;
             } elseif($m > 9){
                 $tm1 = $m;
                 $tm2 = $m+1;
@@ -566,11 +502,7 @@ function get_pc_yearoverview_ym_data($year){
 
 //Get end of year for Year & Month table in the year overview pdf (Accounting)
 function get_ac_yearoverview_ym_data($year){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 
@@ -584,8 +516,8 @@ function get_ac_yearoverview_ym_data($year){
                 $m = 1;
                 $next = true;
             }
-            $ty1 = ($next) ? '2023' : '2022';
-            $ty2 = ($next) ? '2023' : '2022';
+            $ty1 = ($next) ? $year+1 : $year;
+            $ty2 = ($next) ? $year+1 : $year;
             if($m < 9){
                 $tm1 = "0".$m;               
                 $tm2 = "0".$m+1;
@@ -595,7 +527,7 @@ function get_ac_yearoverview_ym_data($year){
             } elseif($m === 12){
                 $tm1 = $m;
                 $tm2 = '01';
-                $ty2 = '2023';
+                $ty2 = $year+1;
             } elseif($m > 9){
                 $tm1 = $m;
                 $tm2 = $m+1;
@@ -620,11 +552,7 @@ function get_ac_yearoverview_ym_data($year){
 
 //Check if a user account exists
 function user_exists(){
-    $database = 'localhost';
-    $username = 'root';
-    $password = '';
-    $dbname = 'books';
-    $connection = new mysqli($database, $username, $password, $dbname);
+    $connection = db_connect();
     if($connection->connect_error){
         return "connection error";
     } else{ 

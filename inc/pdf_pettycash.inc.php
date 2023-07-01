@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION['currentUser'])){
+    exit();
+}
 //Output petty cash pdf dependant on month
 if(isset($_POST['month'])){
     $month = $_POST['month'];

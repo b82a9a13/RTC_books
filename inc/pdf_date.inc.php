@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION['currentUser'])){
+    exit();
+}
 //Title date for pdf and start/end dates
 if($month > 3){
     $month = new DateTime('2022-'.$month.'-1');

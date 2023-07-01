@@ -1,4 +1,7 @@
 <?php
+if(!isset($_SESSION['currentUser'])){
+    exit();
+}
 //Output year overview dependant on year
 if(isset($_POST['year'])){
     $year = $_POST['year'];
@@ -146,6 +149,6 @@ if(isset($_POST['year'])){
         $html .= ($toolhire > 0) ? '<td>£'.$toolhire.'</td>' : '<td></td>';
         $html .= '</tr></tbody></table>';
         $pdf->writeHTML($html, true, false, false, false, '');
-        $filename = 'End Of Year 2022 - 2023';
+        $filename = 'End Of Year '.$year.' - '.$year+1.;
     }
 }

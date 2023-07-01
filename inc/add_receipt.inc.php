@@ -1,4 +1,8 @@
 <?php
+session_start();
+if(!isset($_SESSION['currentUser'])){
+    exit();
+}
 //Add reciept to database and validate input
 require_once('./../lib.php');
 if(isset($_POST['date']) && isset($_POST['item']) && isset($_POST['total']) && isset($_POST['type'])){

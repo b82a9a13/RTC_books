@@ -180,7 +180,7 @@ include("./require_login.php");
             <div class="output-border">
                 <p class="output-title-p">Year Overview</p>
                 <form action="./pdf.php?t=y" method="POST" class="output-form">
-                    <input type="number" min="2022" max="2023" id="year" name="year" value="2022">
+                    <input type="number" min="2022" max="2024" id="year" name="year" value="2023">
                     <button type="submit">Download PDF</button>
                 </form>
             </div>

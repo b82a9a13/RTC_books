@@ -1,4 +1,10 @@
 <?php
+session_start();
+if(isset($_SESSION['spammed'])){
+    if($_SESSION['spammed'] > 4){
+        exit();
+    }
+}
 //login form validation
 require_once('./../lib.php');
 
@@ -58,20 +64,26 @@ if($errorArray != []){
 } else {
     if(count($array) == 2){
         if(login_user($array)){
-            session_start();
             $_SESSION['currentUser'] = true;
             $returnText->return = true;
+            if(isset($_SESSION['spammed'])){
+                unset($_SESSION['spammed']);
+            }
         } else {
             $returnText->return = false;
+            $_SESSION['spammed'] = (isset($_SESSION['spammed'])) ? $_SESSION['spammed'] + 1 : 1;
         }
     } else {
         $array[1] = password_hash($array[1], PASSWORD_DEFAULT);
         if(create_user($array)){
-            session_start();
             $_SESSION['currentUser'] = true;
             $returnText->return = true;
+            if(isset($_SESSION['spammed'])){
+                unset($_SESSION['spammed']);
+            }
         } else {
             $returnText->return = false;
+            $_SESSION['spammed'] = (isset($_SESSION['spammed'])) ? $_SESSION['spammed'] + 1 : 1;
         }
     }
 }
