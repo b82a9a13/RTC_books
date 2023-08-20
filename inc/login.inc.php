@@ -1,5 +1,7 @@
 <?php
-session_start();
+if(!isset($_SESSION)){
+    session_start();
+}
 if(isset($_SESSION['spammed'])){
     if($_SESSION['spammed'] > 4){
         exit();

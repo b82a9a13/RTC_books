@@ -111,13 +111,13 @@ include("./require_login.php");
                 <?php 
                     require_once('./lib.php');
                     $totalInput = total_money_input();
-                    echo($totalInput);
+                    echo(($totalInput > 0) ? $totalInput : 0);
                 ?>
                 </p>
                 <p class="statistics-p">Total Out: £
                 <?php
                     $totalOutput = total_money_output();
-                    echo($totalOutput);
+                    echo(($totalOutput) ? $totalOutput : 0);
                 ?>
                 </p>
                 <p class="statistics-p">Bank Balanace: £

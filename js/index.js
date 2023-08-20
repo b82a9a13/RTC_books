@@ -10,32 +10,34 @@ function table(type,number){
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     xhr.onreadystatechange = function() {
         if(this.status == 200){
-            let buttons = document.querySelectorAll('.table-btn')
-            for(let i = 0; i < buttons.length; i++){
-                if(buttons[i].innerText.includes('Refresh')){
-                    buttons[i].innerText = buttons[i].innerText.replace('Refresh','Show')
-                }
-            }
-            let text = JSON.parse(this.responseText)
-            let newTable = "<h2 class='text-center'>"+type+" Table</h2><table class='table-striped' style='margin-left:auto;margin-right:auto;'><thead><tr>"
-            for(let i = 0; i < headers[number].length; i++){
-                newTable += '<th>'+headers[number][i].heading+'</th>'
-            }
-            newTable += "</tr></thead><tbody>"
-            for(let i = 0; i < text.length; i++){
-                newTable += '<tr>'
-                for(let y = 0; y < text[i].length; y++){
-                    if(headers[number][y].type === 'Currency'){
-                        newTable += '<td>£'+text[i][y]+'</td>'
-                    } else {
-                        newTable += '<td>'+text[i][y]+'</td>'
+            if(this.responseText != []){
+                let buttons = document.querySelectorAll('.table-btn')
+                for(let i = 0; i < buttons.length; i++){
+                    if(buttons[i].innerText.includes('Refresh')){
+                        buttons[i].innerText = buttons[i].innerText.replace('Refresh','Show')
                     }
                 }
-                newTable += '</tr>'
+                let text = JSON.parse(this.responseText)
+                let newTable = "<h2 class='text-center'>"+type+" Table</h2><table class='table-striped' style='margin-left:auto;margin-right:auto;'><thead><tr>"
+                for(let i = 0; i < headers[number].length; i++){
+                    newTable += '<th>'+headers[number][i].heading+'</th>'
+                }
+                newTable += "</tr></thead><tbody>"
+                for(let i = 0; i < text.length; i++){
+                    newTable += '<tr>'
+                    for(let y = 0; y < text[i].length; y++){
+                        if(headers[number][y].type === 'Currency'){
+                            newTable += '<td>£'+text[i][y]+'</td>'
+                        } else {
+                            newTable += '<td>'+text[i][y]+'</td>'
+                        }
+                    }
+                    newTable += '</tr>'
+                }
+                newTable += "</tbody></table>"
+                document.getElementById('table_div').innerHTML = newTable
+                document.getElementById(type.toLowerCase()).innerText = document.getElementById(type.toLowerCase()).innerText.replace('Show','Refresh')
             }
-            newTable += "</tbody></table>"
-            document.getElementById('table_div').innerHTML = newTable
-            document.getElementById(type.toLowerCase()).innerText = document.getElementById(type.toLowerCase()).innerText.replace('Show','Refresh')
         }   
     }
     xhr.send(`type=${type}`);
