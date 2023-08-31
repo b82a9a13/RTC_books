@@ -98,7 +98,6 @@ function total_money_input(){
     } else{ 
         $sql = "SELECT SUM(Total) as Total FROM accounting_in";
         $result = $connection->query($sql);
-        $rowresult = null;
         $looped = false;
         while($row = $result->fetch_assoc()){
             if($looped == false){
@@ -119,7 +118,6 @@ function total_money_output(){
     } else{ 
         $sql = "SELECT SUM(Total) as Total FROM accounting_out";
         $result = $connection->query($sql);
-        $rowresult = null;
         $looped = false;
         while($row = $result->fetch_assoc()){
             if($looped == false){
@@ -140,7 +138,6 @@ function initial_bank_balance(){
     } else{ 
         $sql = "SELECT Balance FROM balances WHERE Type='Bank Balance' AND ID='2'";
         $result = $connection->query($sql);
-        $rowresult = null;
         $looped = false;
         while($row = $result->fetch_assoc()){
             if($looped == false){
@@ -283,7 +280,6 @@ function initial_pettycash_balance(){
     } else{ 
         $sql = "SELECT Balance FROM balances WHERE Type='Petty Cash' AND ID='1'";
         $result = $connection->query($sql);
-        $rowresult = null;
         $looped = false;
         while($row = $result->fetch_assoc()){
             if($looped == false){
@@ -575,11 +571,7 @@ function user_exists(){
 //Create a new user
 function create_user($array){
     if(user_exists() == false){
-        $database = 'localhost';
-        $username = 'root';
-        $password = '';
-        $dbname = 'books';
-        $connection = new mysqli($database, $username, $password, $dbname);
+        $connection = db_connect();
         if($connection->connect_error){
             return false;
         } else{ 
@@ -596,11 +588,7 @@ function create_user($array){
 //Login a existing user
 function login_user($array){
     if(user_exists() == true){
-        $database = 'localhost';
-        $username = 'root';
-        $password = '';
-        $dbname = 'books';
-        $connection = new mysqli($database, $username, $password, $dbname);
+        $connection = db_connect();
         if($connection->connect_error){
             return false;
         } else{ 
