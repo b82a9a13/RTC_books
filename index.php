@@ -106,46 +106,60 @@ include("./require_login.php");
     <div id="statistics" class="section">
         <h2 class="text-center">Statistics</h2>
         <div class="statistics-inner-div">
-            <div class="statistics-border">
+            <div class="statistics-border" id="bank_stat_div">
                 <p class="statistics-title-p">Bank</p>
                 <p class="statistics-p">Total In: £
-                <?php 
-                    require_once('./lib.php');
-                    $totalInput = total_money_input();
-                    echo($totalInput);
-                ?>
+                    <span id="bank_stat_in">
+                        <?php 
+                            require_once('./lib.php');
+                            $totalInput = total_money_input();
+                            echo($totalInput);
+                        ?>
+                    </span>
                 </p>
                 <p class="statistics-p">Total Out: £
-                <?php
-                    $totalOutput = total_money_output();
-                    echo($totalOutput);
-                ?>
+                    <span id="bank_stat_out">
+                        <?php
+                            $totalOutput = total_money_output();
+                            echo($totalOutput);
+                        ?>
+                    </span>
                 </p>
                 <p class="statistics-p">Bank Balanace: £
-                    <?php
-                    echo((initial_bank_balance()+$totalInput)-$totalOutput);
-                    ?>
+                    <span id="bank_stat_bal">
+                        <?php
+                        echo((initial_bank_balance()+$totalInput)-$totalOutput);
+                        ?>
+                    </span>
                 </p>
+                <h2 class='text-center' style='display:none;color:red;' id="bank_stat_error"></h2>
             </div>
-            <div class="statistics-border">
+            <div class="statistics-border" id="petty_stat_div">
                 <p class="statistics-title-p">Petty Cash</p>
                 <p class="statistics-p">Total In: £
-                    <?php 
-                    $totalPettycashInput = get_pettycash_in();
-                    echo($totalPettycashInput);
-                    ?>
+                    <span id="petty_stat_in">
+                        <?php 
+                        $totalPettycashInput = get_pettycash_in();
+                        echo($totalPettycashInput);
+                        ?>
+                    </span>
                 </p>
                 <p class="statistics-p">Total Out: £
-                    <?php
-                    $totalPettycashOutput = get_pettycash_out();
-                    echo($totalPettycashOutput);
-                    ?>
+                    <span id="petty_stat_out">
+                        <?php
+                        $totalPettycashOutput = get_pettycash_out();
+                        echo($totalPettycashOutput);
+                        ?>
+                    </span>
                 </p>
                 <p class="statistics-p">Petty Cash Balance: £
-                    <?php 
-                    echo((initial_pettycash_balance()+$totalPettycashInput)-$totalPettycashOutput);
-                    ?>
+                    <span id="petty_stat_bal">
+                        <?php 
+                        echo((initial_pettycash_balance()+$totalPettycashInput)-$totalPettycashOutput);
+                        ?>
+                    </span>
                 </p>
+                <h2 class='text-center' style='display:none;color:red;' id="petty_stat_error"></h2>
             </div>
         </div>
     </div>

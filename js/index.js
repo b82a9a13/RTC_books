@@ -108,10 +108,12 @@ document.getElementById('add invoice form').addEventListener("submit", (e) => {
                     const ctable = document.getElementById('current_table');
                     const value1 = ctable.getAttribute('tval');
                     const value2 = ctable.getAttribute('pval');
-                    if(['Accounting In','Accounting Out','Balance'].includes(value1) === true && ['0','1','2'].includes(value2) === true){
-                        table(ctable.getAttribute('tval'), ctable.getAttribute('pval'));
+                    if('Accounting In' === value1 && '1' === value2){
+                        table(value1, value2);
                     }
                 }
+                update_stat('bank');
+                update_stat('petty');
             } else {
                 errorText.innerText = errorText.innerText.slice(0, -1)
                 errorText.style.display = 'block'
@@ -167,6 +169,16 @@ document.getElementById('add receipt form').addEventListener("submit", (e) => {
                 errorText.style.display = 'block';
                 errorText.className = 'text-success';
                 errorText.style.color = ''
+                if(document.getElementById('current_table')){
+                    const ctable = document.getElementById('current_table');
+                    const value1 = ctable.getAttribute('tval');
+                    const value2 = ctable.getAttribute('pval');
+                    if(('Petty Cash ID' === value1 && '3' === value2) || ('Petty Cash Type' === value1 && '4' === value2)){
+                        table(value1, value2);
+                    }
+                }
+                update_stat('bank');
+                update_stat('petty');
             } else {
                 errorText.innerText = errorText.innerText.slice(0, -1)
                 errorText.style.display = 'block'
@@ -221,6 +233,16 @@ document.getElementById('add bank transaction form').addEventListener("submit", 
                 errorText.innerText = 'Success';
                 errorText.style.display = 'block';
                 errorText.className = 'text-success';
+                if(document.getElementById('current_table')){
+                    const ctable = document.getElementById('current_table');
+                    const value1 = ctable.getAttribute('tval');
+                    const value2 = ctable.getAttribute('pval');
+                    if('Accounting Out' === value1 && '2' === value2){
+                        table(value1, value2);
+                    }
+                }
+                update_stat('bank');
+                update_stat('petty');
             } else {
                 errorText.innerText = errorText.innerText.slice(0, -1)
                 errorText.style.display = 'block'
@@ -245,3 +267,32 @@ document.getElementById('logout_btn').addEventListener('click', ()=>{
     }
     xhr.send();
 })
+function update_stat(type){
+    if(type == 'bank' || type == 'petty'){
+        const errorText = document.getElementById(`${type}_stat_error`);
+        errorText.style.display = 'none';
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', './inc/update_stat.inc.php', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function(){
+            if(this.status == 200){
+                const text = JSON.parse(this.responseText);
+                if(text['error']){
+                    errorText.innerText = text['error'];
+                    errorText.style.display = 'block';
+                } else if(text['data']){
+                    document.getElementById(`${type}_stat_in`).innerText = text['data'][0];
+                    document.getElementById(`${type}_stat_out`).innerText = text['data'][1];
+                    document.getElementById(`${type}_stat_bal`).innerText = text['data'][2];
+                } else {
+                    errorText.innerText = 'Loading error';
+                    errorText.style.display = 'block';
+                }
+            } else {
+                errorText.innerText = 'Connection error';
+                errorText.style.display = 'block';
+            }
+        }
+        xhr.send(`t=${type}`);
+    }
+}
