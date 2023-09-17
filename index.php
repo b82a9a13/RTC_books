@@ -26,6 +26,7 @@ include("./require_login.php");
             <button id="petty cash id" class="btn-primary btn table-btn" onclick="table('Petty Cash ID',3)">Show Petty Cash ID</button>
             <button id="petty cash type" class="btn-primary btn table-btn" onclick="table('Petty Cash Type',4)">Show Petty Cash Type</button>
         </div>
+        <h2 class='text-center' id="table_error" style='display:none;color:red;'></h2>
         <div id="table_div">
 
         </div>
@@ -111,13 +112,13 @@ include("./require_login.php");
                 <?php 
                     require_once('./lib.php');
                     $totalInput = total_money_input();
-                    echo(($totalInput > 0) ? $totalInput : 0);
+                    echo($totalInput);
                 ?>
                 </p>
                 <p class="statistics-p">Total Out: £
                 <?php
                     $totalOutput = total_money_output();
-                    echo(($totalOutput) ? $totalOutput : 0);
+                    echo($totalOutput);
                 ?>
                 </p>
                 <p class="statistics-p">Bank Balanace: £

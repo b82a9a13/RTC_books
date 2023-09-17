@@ -1,23 +1,27 @@
 <?php
-if(!isset($_SESSION)){
-    session_start();
-}
+session_start();
 if(!isset($_SESSION['currentUser'])){
     exit();
 }
 //Ouput table as json and validate input
 require_once('./../lib.php');
-if(isset($_POST['type'])){
+$response = new stdClass();
+if(!isset($_POST['type'])){
+    $response->error = 'No type provided';
+} else {
     $type = $_POST['type'];
     if($type === 'Balance'){
-        echo(json_encode(Balances_all()));
+        $response->data = Balances_all();
     } elseif($type === 'Accounting In'){
-        echo(json_encode(Accounting_in_all()));
+        $response->data = Accounting_in_all();
     } elseif($type === 'Accounting Out'){
-        echo(json_encode(Accounting_out_all()));
+        $response->data = Accounting_out_all();
     } elseif($type === 'Petty Cash ID'){
-        echo(json_encode(Petty_cash_id_all()));
+        $response->data = Petty_cash_id_all();
     } elseif($type == 'Petty Cash Type'){
-        echo(json_encode(Petty_cash_type_all()));
+        $response->data = Petty_cash_type_all();
+    } else {
+        $response->error = 'Invalid type provided';
     }
 }
+echo(json_encode($response));

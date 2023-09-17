@@ -5,39 +5,49 @@ fetch("./json/headers.json")
         headers = json;
     })
 function table(type,number){
+    const errorText = document.getElementById('table_error');
+    errorText.style.display = 'none';
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./inc/table.inc.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-    xhr.onreadystatechange = function() {
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
         if(this.status == 200){
-            if(this.responseText != []){
-                let buttons = document.querySelectorAll('.table-btn')
+            const response = JSON.parse(this.responseText);
+            if(response['error']){
+                errorText.innerText = response['error'];
+                errorText.style.display = 'block';
+            } else if(response['data']){
+                let buttons = document.querySelectorAll('.table-btn');
                 for(let i = 0; i < buttons.length; i++){
                     if(buttons[i].innerText.includes('Refresh')){
-                        buttons[i].innerText = buttons[i].innerText.replace('Refresh','Show')
+                        buttons[i].innerText = buttons[i].innerText.replace('Refresh','Show');
                     }
                 }
-                let text = JSON.parse(this.responseText)
-                let newTable = "<h2 class='text-center'>"+type+" Table</h2><table class='table-striped' style='margin-left:auto;margin-right:auto;'><thead><tr>"
+                let data = response['data'];
+                let newTable = `<h2 class='text-center'>${type} Table</h2><table id='current_table' tval='${type}' pval='${number}' class='table-striped' style='margin-left:auto;margin-right:auto;'><thead><tr>`;
                 for(let i = 0; i < headers[number].length; i++){
-                    newTable += '<th>'+headers[number][i].heading+'</th>'
+                    newTable += '<th>'+headers[number][i].heading+'</th>';
                 }
-                newTable += "</tr></thead><tbody>"
-                for(let i = 0; i < text.length; i++){
-                    newTable += '<tr>'
-                    for(let y = 0; y < text[i].length; y++){
+                newTable += "</tr></thead><tbody>";
+                for(let i = 0; i < data.length; i++){
+                    newTable += '<tr>';
+                    for(let y = 0; y < data[i].length; y++){
                         if(headers[number][y].type === 'Currency'){
-                            newTable += '<td>£'+text[i][y]+'</td>'
+                            newTable += '<td>£'+data[i][y]+'</td>';
                         } else {
-                            newTable += '<td>'+text[i][y]+'</td>'
+                            newTable += '<td>'+data[i][y]+'</td>';
                         }
                     }
-                    newTable += '</tr>'
+                    newTable += '</tr>';
                 }
-                newTable += "</tbody></table>"
-                document.getElementById('table_div').innerHTML = newTable
-                document.getElementById(type.toLowerCase()).innerText = document.getElementById(type.toLowerCase()).innerText.replace('Show','Refresh')
+                newTable += "</tbody></table>";
+                document.getElementById('table_div').innerHTML = newTable;
+                document.getElementById(type.toLowerCase()).innerText = document.getElementById(type.toLowerCase()).innerText.replace('Show','Refresh');
+            } else {
+                errorText.innerText = 'Loading error';
+                errorText.style.display = 'block';
             }
+
         }   
     }
     xhr.send(`type=${type}`);
@@ -94,6 +104,14 @@ document.getElementById('add invoice form').addEventListener("submit", (e) => {
                 errorText.style.display = 'block'
                 errorText.className = 'text-success'
                 errorText.style.color = ''
+                if(document.getElementById('current_table')){
+                    const ctable = document.getElementById('current_table');
+                    const value1 = ctable.getAttribute('tval');
+                    const value2 = ctable.getAttribute('pval');
+                    if(['Accounting In','Accounting Out','Balance'].includes(value1) === true && ['0','1','2'].includes(value2) === true){
+                        table(ctable.getAttribute('tval'), ctable.getAttribute('pval'));
+                    }
+                }
             } else {
                 errorText.innerText = errorText.innerText.slice(0, -1)
                 errorText.style.display = 'block'
