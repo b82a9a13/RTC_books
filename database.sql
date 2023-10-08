@@ -10,7 +10,7 @@ CREATE TABLE accounting_in (
 
 CREATE TABLE accounting_out (
     ID int(11),
-    DATE date,
+    Date date,
     Supplier varchar(255),
     Total decimal(11,2),
     Type varchar(255)
