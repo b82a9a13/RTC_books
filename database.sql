@@ -18,7 +18,7 @@ CREATE TABLE accounting_out (
 
 CREATE TABLE balances (
     ID int(11),
-    TYPE varchar(255),
+    Type varchar(255),
     Date date,
     Balance decimal(11,2)
 );

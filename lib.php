@@ -105,6 +105,7 @@ function total_money_input(){
         $sql = "SELECT SUM(Total) as Total FROM accounting_in";
         $result = $connection->query($sql);
         $looped = false;
+        $rowresult = 0;
         while($row = $result->fetch_assoc()){
             if($looped == false){
                 $rowresult = $row['Total'];
@@ -125,6 +126,7 @@ function total_money_output(){
         $sql = "SELECT SUM(Total) as Total FROM accounting_out";
         $result = $connection->query($sql);
         $looped = false;
+        $rowresult = 0;
         while($row = $result->fetch_assoc()){
             if($looped == false){
                 $rowresult = $row['Total'];
@@ -145,6 +147,7 @@ function initial_bank_balance(){
         $sql = "SELECT Balance FROM balances WHERE Type='Bank Balance' AND ID='2'";
         $result = $connection->query($sql);
         $looped = false;
+        $rowresult = 0;
         while($row = $result->fetch_assoc()){
             if($looped == false){
                 $rowresult = $row['Balance'];
@@ -299,6 +302,7 @@ function initial_pettycash_balance(){
         $sql = "SELECT Balance FROM balances WHERE Type='Petty Cash' AND ID='1'";
         $result = $connection->query($sql);
         $looped = false;
+        $rowresult = 0;
         while($row = $result->fetch_assoc()){
             if($looped == false){
                 $rowresult = $row['Balance'];
