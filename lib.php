@@ -391,7 +391,7 @@ function get_pettycash_in_month($start, $end){
     } else{
         $array = [];
         $sql = $connection->prepare("SELECT * FROM petty_cash_id WHERE Date >= ? AND Date <= ?");
-        $sql->bind_param('ss', $date, $end);
+        $sql->bind_param('ss', $start, $end);
         $sql->execute();
         $result = $sql->get_result();
         if($result->num_rows > 0){
