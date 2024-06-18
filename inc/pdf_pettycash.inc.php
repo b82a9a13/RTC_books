@@ -35,37 +35,39 @@ if(isset($_POST['month'])){
             <th width="75px">Work Clothing</th>
             <th width="75px">Tool Hire</th>
         </tr></thead><tbody>';
-        $pettycashType = get_pettycash_in_type($refId);
         $totalOut = 0;
-        foreach($pettycashType as $pcType){
-            $html .= '<tr>';
-            $position = 0;
-            if($pcType[1] == 'Material'){
-                $position = 1;
-            } elseif($pcType[1] == 'Phone'){
-                $position = 2;
-            } elseif($pcType[1] == 'Postage'){
-                $position = 3;
-            } elseif($pcType[1] == 'Stationary and Printing'){
-                $position = 4;
-            } elseif($pcType[1] == 'Tools'){
-                $position = 5;
-            } elseif($pcType[1] == 'Sundry'){
-                $position = 6;
-            } elseif($pcType[1] == 'Work Clothing'){
-                $position = 7;
-            } elseif($pcType[1] == 'Tool Hire'){
-                $position = 8;
-            }
-            for($i = 1; $i <= 8; $i++){
-                if($position === $i){
-                    $totalOut += $pcType[2];
-                    $html .= '<td width="75px">£'.$pcType[2].'</td>';
-                } else {
-                    $html .= '<td width="75px"></td>';
+        if($refId != []){
+            $pettycashType = get_pettycash_in_type($refId);
+            foreach($pettycashType as $pcType){
+                $html .= '<tr>';
+                $position = 0;
+                if($pcType[1] == 'Material'){
+                    $position = 1;
+                } elseif($pcType[1] == 'Phone'){
+                    $position = 2;
+                } elseif($pcType[1] == 'Postage'){
+                    $position = 3;
+                } elseif($pcType[1] == 'Stationary and Printing'){
+                    $position = 4;
+                } elseif($pcType[1] == 'Tools'){
+                    $position = 5;
+                } elseif($pcType[1] == 'Sundry'){
+                    $position = 6;
+                } elseif($pcType[1] == 'Work Clothing'){
+                    $position = 7;
+                } elseif($pcType[1] == 'Tool Hire'){
+                    $position = 8;
                 }
+                for($i = 1; $i <= 8; $i++){
+                    if($position === $i){
+                        $totalOut += $pcType[2];
+                        $html .= '<td width="75px">£'.$pcType[2].'</td>';
+                    } else {
+                        $html .= '<td width="75px"></td>';
+                    }
+                }
+                $html .= '</tr>';
             }
-            $html .= '</tr>';
         }
         $html .= '</tbody></table>';
         $pdf->writeHTML($html, true, false, false, false, '');

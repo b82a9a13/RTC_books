@@ -10,7 +10,6 @@ if(isset($_POST['month'])){
         $pdf->writeHTML('<p>Invalid month</p>', true, false, false, false, '');
     } else {
         include('./inc/pdf_date.inc.php');
-        $accounting = get_accounting_in_month($start, $end);
         $pdf->Ln();
         $html = '<table border="1" cellpadding="2"><thead><tr>
             <th width="20px">ID</th>
@@ -19,6 +18,7 @@ if(isset($_POST['month'])){
             <th width="75px">Reference</th>
             <th width="75px">Total</th>
         </tr></thead><tbody>';
+        $accounting = get_accounting_in_month($start, $end);
         $totalAccountIn = 0;
         foreach($accounting as $account){
             $html .= '<tr><td width="20px">'.$account[0].'</td><td width="100px">'.$account[1].'</td><td width="100px">'.$account[2].'</td><td width="75px">'.$account[3].'</td><td width="75px">£'.$account[4].'</td></tr>';

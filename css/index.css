@@ -17,7 +17,7 @@ td, th{
     border-radius: 5px;
     padding: 1rem;
 }
-.statistics-border, .output-border{
+.div-border{
     border: 2px solid #337ab7;
     border-radius: 5px;
     padding: 1rem;
@@ -40,7 +40,7 @@ td, th{
     margin-left: auto;
     margin-right: auto;
 }
-.form-title-p, .statistics-title-p, .output-title-p{
+.title-p{
     font-size: 25px;
     color: #337ab7;
 }
@@ -54,7 +54,7 @@ td, th{
     display: flex;
     width: 300px;
 }
-.output-inner-div, .statistics-inner-div{
+.inner-div{
     display:flex;    
     margin-left: auto;
     margin-right: auto;
