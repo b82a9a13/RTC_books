@@ -12,22 +12,26 @@ function db_connect(){
 function query_table($table, $params){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = "SELECT * FROM ".$table;
-        $result = $connection->query($sql);
-        $array = [];
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $tempoary = [];
-                foreach($params as $param){
-                    array_push($tempoary, $row[$param]);
+        try{
+            $sql = "SELECT * FROM ".$table;
+            $result = $connection->query($sql);
+            $array = [];
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $tempoary = [];
+                    foreach($params as $param){
+                        array_push($tempoary, $row[$param]);
+                    }
+                    array_push($array, $tempoary);
                 }
-                array_push($array, $tempoary);
             }
+            $connection->close();
+            return $array;
+        } catch(PDOexception $e){
+            return "Query Error";
         }
-        $connection->close();
-        return $array;
     }
 }
 
@@ -405,7 +409,7 @@ function get_pettycash_in_month($start, $end){
     }
 }
 
-//Gett petty cash in type for the values provided || Need to convert to prepared statement
+//Get petty cash in type for the values provided || Need to convert to prepared statement
 function get_pettycash_in_type($values){
     $connection = db_connect();
     if($connection->connect_error){

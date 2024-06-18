@@ -1,5 +1,7 @@
 <?php //Index for books page 
 include("./require_login.php");
+//Define the current year for the tax year
+$taxYear = (date("n") >= 4) ? date("Y") : date("Y")-1;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +17,13 @@ include("./require_login.php");
     <div class='text-center'>
         <button class='btn btn-primary' id="logout_btn">Log out</button>
     </div>
-    <h1 class="text-center">Books</h1>
+    <h1 class="text-center" id="page title"><?php echo $taxYear; ?> Books</h1>
+    <?php //Section for selecting what years data to display for the page ?>
+    <div class="section text-center">
+        <h2 class="text-center">Year</h2>
+        <input id="year input" type="number" min="2023" max="<?php echo $taxYear; ?>" id="year" name="year" value="<?php echo $taxYear; ?>" onchange="change_year()"><br>
+    </div>
+    <br>
     <?php //Section for displaying data in tables ?>
     <div id="tables" class="section">
         <h2 class="text-center">Tables</h2>
@@ -43,7 +51,7 @@ include("./require_login.php");
         <div class="input-forms">
             <div class="input-form-div">
                 <form action="" id="add invoice form" class="text-center input-form input-form-div-form">
-                    <p class="text-center form-title-p">Add Invoice</p>                
+                    <p class="text-center title-p">Add Invoice</p>                
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="incoive_date"></div>
                     <div class="input-div"><p class="input-p">Supplier:</p><input type="text" class="input-input" id="invoice_supplier"></div>
                     <div class="input-div"><p class="input-p">Reference:</p><input type="number" class="input-input" id="invoice_reference"></div>
@@ -54,7 +62,7 @@ include("./require_login.php");
             </div>
             <div class="input-form-div">
                 <form action="" id="add receipt form" class="input-form-div-form input-form text-center">
-                    <p class="text-center form-title-p">Add Receipt</p>
+                    <p class="text-center title-p">Add Receipt</p>
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="receipt_date"></div>
                     <div class="input-div"><p class="input-p">Item:</p><input type="text" class="input-input" id="receipt_item"></div>
                     <div class="input-div"><p class="input-p">Total:</p><input type="number" class="input-input" id="receipt_total" step="0.01"></div>
@@ -77,7 +85,7 @@ include("./require_login.php");
             </div>
             <div class="input-form-div">
                 <form action="" id="add bank transaction form" class="input-form-div-form input-form text-center">
-                    <p class="text-center form-title-p">Add Bank Transaction</p>
+                    <p class="text-center title-p">Add Bank Transaction</p>
                     <div class="input-div"><p class="input-p">Date:</p><input type="date" class="input-input" id="banktransaction_date"></div>
                     <div class="input-div"><p class="input-p">Supplier:</p><input type="text" class="input-input" id="banktransaction_supplier"></div>
                     <div class="input-div"><p class="input-p">Total:</p><input type="number" step="0.01" class="input-input" id="banktransaction_total"></div>
@@ -105,9 +113,9 @@ include("./require_login.php");
     <?php //Section for displaying statistics for the year ?>
     <div id="statistics" class="section">
         <h2 class="text-center">Statistics</h2>
-        <div class="statistics-inner-div">
-            <div class="statistics-border" id="bank_stat_div">
-                <p class="statistics-title-p">Bank</p>
+        <div class="inner-div">
+            <div class="div-border" id="bank_stat_div">
+                <p class="title-p">Bank</p>
                 <p class="statistics-p">Total In: £
                     <span id="bank_stat_in">
                         <?php 
@@ -134,8 +142,8 @@ include("./require_login.php");
                 </p>
                 <h2 class='text-center' style='display:none;color:red;' id="bank_stat_error"></h2>
             </div>
-            <div class="statistics-border" id="petty_stat_div">
-                <p class="statistics-title-p">Petty Cash</p>
+            <div class="div-border" id="petty_stat_div">
+                <p class="title-p">Petty Cash</p>
                 <p class="statistics-p">Total In: £
                     <span id="petty_stat_in">
                         <?php 
@@ -167,10 +175,10 @@ include("./require_login.php");
     <?php //Section for outputting data into a PDF ?>
     <div id="output" class="section">
         <h2 class="text-center">Output</h2>
-        <div class="output-inner-div">
-            <div class="output-border">
-                <p class="output-title-p">Accounting</p>
-                <form action="./pdf.php?t=a" method="POST" class="output-form">
+        <div class="inner-div">
+            <div class="div-border">
+                <p class="title-p">Accounting</p>
+                <form action="./pdf.php?t=a" method="POST" class="output-form" id="a_form">
                     <?php 
                         //Create month selection and download, then output to page
                         $monthSelect = '<select name="month" id="month">';
@@ -179,27 +187,32 @@ include("./require_login.php");
                             $monthSelect .= '<option value="'.$msInt.'">'.$msTxt.'</option>';
                             $msInt++;
                         }
-                        $monthSelect .= '</select><button type="submit">Download PDF</button>';
+                        $monthSelect .= '</select><button type="submit" class="btn-primary btn">Download PDF</button>';
                         echo($monthSelect);
                     ?>
+                    <input type="number" name="year" id="a_year" hidden>
                 </form>
             </div>
-            <div class="output-border">
-                <p class="output-title-p">Petty Cash</p>
-                <form action="./pdf.php?t=p" method="POST" class="output-form">
+            <div class="div-border">
+                <p class="title-p">Petty Cash</p>
+                <form action="./pdf.php?t=p" method="POST" class="output-form" id="p_form">
                     <?php 
                         echo($monthSelect);
                     ?>
+                    <input type="number" name="year" id="p_year" hidden>
                 </form>
             </div>
-            <div class="output-border">
-                <p class="output-title-p">Year Overview</p>
-                <form action="./pdf.php?t=y" method="POST" class="output-form">
-                    <input type="number" min="2022" max="2024" id="year" name="year" value="2023">
-                    <button type="submit">Download PDF</button>
-                </form>
+            <div class="div-border">
+                <p class="title-p">Year Overview</p>
+                <button type="button" class="btn-primary btn" onclick="output_pdf('y')">Download PDF</button>
             </div>
         </div>
+    </div>
+    <br>
+    <?php //Section for adding the first bank balance and the first petty cash balance. It is also used to create the initial bank balance and petty cash balance for the year?>
+    <div id="balances" class="section">
+        <h2 class="text-center">Balances</h2>
+        <div class="inner-div"></div>
     </div>
 </body>
 <?php //Include JavaScript ?>
