@@ -30,7 +30,7 @@ function query_table($table, $params){
             $connection->close();
             return $array;
         } catch(PDOexception $e){
-            return "Query Error";
+            return "SQL Error";
         }
     }
 }
@@ -68,34 +68,38 @@ function add_invoice($date, $supplier, $reference, $total){
     $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = $connection->prepare("SELECT * FROM accounting_in WHERE Date = ? AND Supplier = ? AND Reference = ? AND Total = ?");
-        $sql->bind_param("ssid", $date, $supplier, $reference, $total);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows === 0){
-            $sql->close();
-            $sql = "SELECT MAX(ID) AS ID FROM accounting_in";
-            $result = $connection->query($sql);
-            $looped = false;
-            $rowresult = '';
-            while($row = $result->fetch_assoc()){
-                if($looped == false){
-                    $rowresult = $row['ID'] + 1;
-                    $looped = true;
-                }
-            }
-            $sql = $connection->prepare("INSERT INTO accounting_in (ID, Date, Supplier, Reference, Total) VALUES (?, ?, ?, ?, ?)");
-            $sql->bind_param("issid", $rowresult, $date, $supplier, $reference, $total);
+        try{
+            $sql = $connection->prepare("SELECT * FROM accounting_in WHERE Date = ? AND Supplier = ? AND Reference = ? AND Total = ?");
+            $sql->bind_param("ssid", $date, $supplier, $reference, $total);
             $sql->execute();
-            $sql->close();
-            $connection->close();
-            return "success";
-        } else {
-            $sql->close();
-            $connection->close();
-            return "exists";
+            $result = $sql->get_result();
+            if($result->num_rows === 0){
+                $sql->close();
+                $sql = "SELECT MAX(ID) AS ID FROM accounting_in";
+                $result = $connection->query($sql);
+                $looped = false;
+                $rowresult = '';
+                while($row = $result->fetch_assoc()){
+                    if($looped == false){
+                        $rowresult = $row['ID'] + 1;
+                        $looped = true;
+                    }
+                }
+                $sql = $connection->prepare("INSERT INTO accounting_in (ID, Date, Supplier, Reference, Total) VALUES (?, ?, ?, ?, ?)");
+                $sql->bind_param("issid", $rowresult, $date, $supplier, $reference, $total);
+                $sql->execute();
+                $sql->close();
+                $connection->close();
+                return "Success";
+            } else {
+                $sql->close();
+                $connection->close();
+                return "Exists";
+            }
+        } catch(PDOexception $e){
+            return "SQL error";
         }
     }
 }
@@ -104,20 +108,24 @@ function add_invoice($date, $supplier, $reference, $total){
 function total_money_input(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = "SELECT SUM(Total) as Total FROM accounting_in";
-        $result = $connection->query($sql);
-        $looped = false;
-        $rowresult = 0;
-        while($row = $result->fetch_assoc()){
-            if($looped == false){
-                $rowresult = $row['Total'];
-                $looped = true;
+        try{
+            $sql = "SELECT SUM(Total) as Total FROM accounting_in";
+            $result = $connection->query($sql);
+            $looped = false;
+            $rowresult = 0;
+            while($row = $result->fetch_assoc()){
+                if($looped == false){
+                    $rowresult = $row['Total'];
+                    $looped = true;
+                }
             }
+            $connection->close();
+            return $rowresult;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $rowresult;
     }
 }
 
@@ -125,20 +133,24 @@ function total_money_input(){
 function total_money_output(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = "SELECT SUM(Total) as Total FROM accounting_out";
-        $result = $connection->query($sql);
-        $looped = false;
-        $rowresult = 0;
-        while($row = $result->fetch_assoc()){
-            if($looped == false){
-                $rowresult = $row['Total'];
-                $looped = true;
+        try{
+            $sql = "SELECT SUM(Total) as Total FROM accounting_out";
+            $result = $connection->query($sql);
+            $looped = false;
+            $rowresult = 0;
+            while($row = $result->fetch_assoc()){
+                if($looped == false){
+                    $rowresult = $row['Total'];
+                    $looped = true;
+                }
             }
+            $connection->close();
+            return $rowresult;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $rowresult;
     }
 }
 
@@ -146,20 +158,24 @@ function total_money_output(){
 function initial_bank_balance(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = "SELECT Balance FROM balances WHERE Type='Bank Balance' AND ID='2'";
-        $result = $connection->query($sql);
-        $looped = false;
-        $rowresult = 0;
-        while($row = $result->fetch_assoc()){
-            if($looped == false){
-                $rowresult = $row['Balance'];
-                $looped = true;
+        try{
+            $sql = "SELECT Balance FROM balances WHERE Type='Bank Balance' AND ID='2'";
+            $result = $connection->query($sql);
+            $looped = false;
+            $rowresult = 0;
+            while($row = $result->fetch_assoc()){
+                if($looped == false){
+                    $rowresult = $row['Balance'];
+                    $looped = true;
+                }
             }
+            $connection->close();
+            return $rowresult;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $rowresult;
     }
 }
 
@@ -167,21 +183,25 @@ function initial_bank_balance(){
 function get_accounting_in_month($start, $end){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else {
-        $array = [];
-        $sql = $connection->prepare("SELECT * FROM accounting_in WHERE Date >= ? AND Date <= ?");
-        $sql->bind_param('ss', $start, $end);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                array_push($array,[$row['ID'],date('d/m/Y',strtotime($row['Date'])),$row['Supplier'],$row['Reference'],$row['Total']]);
+        try{
+            $array = [];
+            $sql = $connection->prepare("SELECT * FROM accounting_in WHERE Date >= ? AND Date <= ?");
+            $sql->bind_param('ss', $start, $end);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array,[$row['ID'],date('d/m/Y',strtotime($row['Date'])),$row['Supplier'],$row['Reference'],$row['Total']]);
+                }
             }
+            $sql->close();
+            $connection->close();
+            return $array;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $sql->close();
-        $connection->close();
-        return $array;
     }
 }
 
@@ -189,21 +209,25 @@ function get_accounting_in_month($start, $end){
 function get_accounting_out_month($start, $end){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else {
-        $array = [];
-        $sql = $connection->prepare("SELECT * FROM accounting_out WHERE Date >= ? AND Date <= ?");
-        $sql->bind_param('ss', $start, $end);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Supplier'], $row['Total'], $row['Type']]);
+        try{
+            $array = [];
+            $sql = $connection->prepare("SELECT * FROM accounting_out WHERE Date >= ? AND Date <= ?");
+            $sql->bind_param('ss', $start, $end);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Supplier'], $row['Total'], $row['Type']]);
+                }
             }
+            $sql->close();
+            $connection->close();
+            return $array;
+        } catch(Exception $e){
+            return "SQL Error";
         }
-        $sql->close();
-        $connection->close();
-        return $array;
     }
 }
 
@@ -211,50 +235,54 @@ function get_accounting_out_month($start, $end){
 function get_accounting_cf_month($start, $end){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else {
-        if($start < '2023-04-05'){
-            $sql = "SELECT Balance FROM balances WHERE ID = '2'";
-            $result = $connection->query($sql);
-            $total = 0;
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    $total += $row['Balance'];
+        try{
+            if($start < '2023-04-05'){
+                $sql = "SELECT Balance FROM balances WHERE ID = '2'";
+                $result = $connection->query($sql);
+                $total = 0;
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        $total += $row['Balance'];
+                    }
                 }
-            }
-            $connection->close();
-            return $total;
-        } else {
-            $total = 0;
-            $sql = $connection->prepare("SELECT Total FROM accounting_in WHERE Date < ?");
-            $sql->bind_param('s', $start);
-            $sql->execute();
-            $result = $sql->get_result();
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    $total += $row['Total'];
+                $connection->close();
+                return $total;
+            } else {
+                $total = 0;
+                $sql = $connection->prepare("SELECT Total FROM accounting_in WHERE Date < ?");
+                $sql->bind_param('s', $start);
+                $sql->execute();
+                $result = $sql->get_result();
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        $total += $row['Total'];
+                    }
                 }
-            }
-            $sql->close();
-            $sql = $connection->prepare("SELECT Total FROM accounting_out WHERE Date < ?");
-            $sql->bind_param('s', $start);
-            $sql->execute();
-            $result = $sql->get_result();
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    $total -= $row['Total'];
+                $sql->close();
+                $sql = $connection->prepare("SELECT Total FROM accounting_out WHERE Date < ?");
+                $sql->bind_param('s', $start);
+                $sql->execute();
+                $result = $sql->get_result();
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        $total -= $row['Total'];
+                    }
                 }
-            }
-            $sql->close();
-            $sql = "SELECT Balance FROM balances WHERE ID = '2'";
-            $result = $connection->query($sql);
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    $total += $row['Balance'];
+                $sql->close();
+                $sql = "SELECT Balance FROM balances WHERE ID = '2'";
+                $result = $connection->query($sql);
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        $total += $row['Balance'];
+                    }
                 }
+                $connection->close();
+                return $total;
             }
-            $connection->close();
-            return $total;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
     }
 }
@@ -263,18 +291,22 @@ function get_accounting_cf_month($start, $end){
 function get_pettycash_in(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $total = 0;
-        $sql = "SELECT Total FROM accounting_out WHERE Type = 'Petty Cash'";
-        $result = $connection->query($sql);
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $total += $row['Total'];
+        try{
+            $total = 0;
+            $sql = "SELECT Total FROM accounting_out WHERE Type = 'Petty Cash'";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $total += $row['Total'];
+                }
             }
+            $connection->close();
+            return $total;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $total;
     }
 }
 
@@ -282,18 +314,22 @@ function get_pettycash_in(){
 function get_pettycash_out(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $total = 0;
-        $sql = "SELECT Total FROM petty_cash_id";
-        $result = $connection->query($sql);
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $total += $row['Total'];
+        try{
+            $total = 0;
+            $sql = "SELECT Total FROM petty_cash_id";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $total += $row['Total'];
+                }
             }
+            $connection->close();
+            return $total;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $total;
     }
 }
 
@@ -301,20 +337,24 @@ function get_pettycash_out(){
 function initial_pettycash_balance(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = "SELECT Balance FROM balances WHERE Type='Petty Cash' AND ID='1'";
-        $result = $connection->query($sql);
-        $looped = false;
-        $rowresult = 0;
-        while($row = $result->fetch_assoc()){
-            if($looped == false){
-                $rowresult = $row['Balance'];
-                $looped = true;
+        try{
+            $sql = "SELECT Balance FROM balances WHERE Type='Petty Cash' AND ID='1'";
+            $result = $connection->query($sql);
+            $looped = false;
+            $rowresult = 0;
+            while($row = $result->fetch_assoc()){
+                if($looped == false){
+                    $rowresult = $row['Balance'];
+                    $looped = true;
+                }
             }
+            $connection->close();
+            return $rowresult;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $rowresult;
     }
 }
 
@@ -323,34 +363,38 @@ function add_receipt($date, $item, $total, $type){
     $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = $connection->prepare("SELECT * FROM petty_cash_id INNER JOIN petty_cash_type ON petty_cash_id.ReferenceID = petty_cash_type.ReferenceID WHERE petty_cash_id.Date = ? AND petty_cash_id.Item = ? AND petty_cash_id.Total = ? AND petty_cash_type.Type = ?");
-        $sql->bind_param('ssds', $date, $item, $total, $type);
-        $sql->execute();
-        $result = $sql->get_result();
-        $rowresult = '';
-        if($result->num_rows === 0){
-            $sql->close();
-            $sql = "SELECT MAX(ID) AS ID FROM petty_cash_type";
-            $result = $connection->query($sql);
-            while($row = $result->fetch_assoc()){
-                $rowresult = $row['ID'] + 1;
+        try{
+            $sql = $connection->prepare("SELECT * FROM petty_cash_id INNER JOIN petty_cash_type ON petty_cash_id.ReferenceID = petty_cash_type.ReferenceID WHERE petty_cash_id.Date = ? AND petty_cash_id.Item = ? AND petty_cash_id.Total = ? AND petty_cash_type.Type = ?");
+            $sql->bind_param('ssds', $date, $item, $total, $type);
+            $sql->execute();
+            $result = $sql->get_result();
+            $rowresult = '';
+            if($result->num_rows === 0){
+                $sql->close();
+                $sql = "SELECT MAX(ID) AS ID FROM petty_cash_type";
+                $result = $connection->query($sql);
+                while($row = $result->fetch_assoc()){
+                    $rowresult = $row['ID'] + 1;
+                }
+                $sql = $connection->prepare("INSERT INTO petty_cash_id (ReferenceID, Date, Item, Total) VALUES (?, ?, ?, ?)");
+                $sql->bind_param('issd', $rowresult, $date, $item, $total);
+                $sql->execute();
+                $sql->close();
+                $sql = $connection->prepare("INSERT INTO petty_cash_type (ID, ReferenceID, Type, Total) VALUES (?, ?, ?, ?)");
+                $sql->bind_param('iisd', $rowresult, $rowresult, $type, $total);
+                $sql->execute();
+                $sql->close();
+                $connection->close();
+                return "Success";
+            } else {
+                $sql->close();
+                $connection->close();
+                return "Exists";
             }
-            $sql = $connection->prepare("INSERT INTO petty_cash_id (ReferenceID, Date, Item, Total) VALUES (?, ?, ?, ?)");
-            $sql->bind_param('issd', $rowresult, $date, $item, $total);
-            $sql->execute();
-            $sql->close();
-            $sql = $connection->prepare("INSERT INTO petty_cash_type (ID, ReferenceID, Type, Total) VALUES (?, ?, ?, ?)");
-            $sql->bind_param('iisd', $rowresult, $rowresult, $type, $total);
-            $sql->execute();
-            $sql->close();
-            $connection->close();
-            return "success";
-        } else {
-            $sql->close();
-            $connection->close();
-            return "exists";
+        } catch(PDOException $e){
+            return "SQL Error";
         }
     }
 }
@@ -360,29 +404,33 @@ function add_banktransaction($date, $supplier, $total, $type){
     $connection = db_connect();
     $date = date('Y-m-d', $date);
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = $connection->prepare("SELECT * FROM accounting_out WHERE Date = ? AND Supplier = ? AND Total = ? AND Type = ?");
-        $sql->bind_param('ssds', $date, $supplier, $total, $type);
-        $sql->execute();
-        $result = $sql->get_result();
-        $rowresult = '';
-        if($result->num_rows === 0){
-            $sql->close();
-            $sql = "SELECT MAX(ID) AS ID FROM accounting_out";
-            $result = $connection->query($sql);
-            while($row = $result->fetch_assoc()){
-                $rowresult = $row['ID']+1;
-            }
-            $sql = $connection->prepare("INSERT INTO accounting_out (ID, Date, Supplier, Total, Type) VALUES (?, ?, ?, ?, ?)");
-            $sql->bind_param('issds', $rowresult, $date, $supplier, $total, $type);
+        try{
+            $sql = $connection->prepare("SELECT * FROM accounting_out WHERE Date = ? AND Supplier = ? AND Total = ? AND Type = ?");
+            $sql->bind_param('ssds', $date, $supplier, $total, $type);
             $sql->execute();
-            $sql->close();
-            $connection->close();
-            return "success";
-        } else {
-            $connection->close();
-            return "exists";
+            $result = $sql->get_result();
+            $rowresult = '';
+            if($result->num_rows === 0){
+                $sql->close();
+                $sql = "SELECT MAX(ID) AS ID FROM accounting_out";
+                $result = $connection->query($sql);
+                while($row = $result->fetch_assoc()){
+                    $rowresult = $row['ID']+1;
+                }
+                $sql = $connection->prepare("INSERT INTO accounting_out (ID, Date, Supplier, Total, Type) VALUES (?, ?, ?, ?, ?)");
+                $sql->bind_param('issds', $rowresult, $date, $supplier, $total, $type);
+                $sql->execute();
+                $sql->close();
+                $connection->close();
+                return "Success";
+            } else {
+                $connection->close();
+                return "Exists";
+            }
+        } catch(PDOException $e){
+            return "SQL Error";
         }
     }
 }
@@ -391,21 +439,25 @@ function add_banktransaction($date, $supplier, $total, $type){
 function get_pettycash_in_month($start, $end){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{
-        $array = [];
-        $sql = $connection->prepare("SELECT * FROM petty_cash_id WHERE Date >= ? AND Date <= ?");
-        $sql->bind_param('ss', $start, $end);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                array_push($array, [date('d/m/Y',strtotime($row['Date'])), $row['Item'], $row['ReferenceID'],  $row['Total']]);
+        try{
+            $array = [];
+            $sql = $connection->prepare("SELECT * FROM petty_cash_id WHERE Date >= ? AND Date <= ?");
+            $sql->bind_param('ss', $start, $end);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, [date('d/m/Y',strtotime($row['Date'])), $row['Item'], $row['ReferenceID'],  $row['Total']]);
+                }
             }
+            $sql->close();
+            $connection->close();
+            return $array;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $sql->close();
-        $connection->close();
-        return $array;
     }
 }
 
@@ -413,28 +465,32 @@ function get_pettycash_in_month($start, $end){
 function get_pettycash_in_type($values){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $array = [];
-        $sql = "SELECT * FROM petty_cash_type WHERE ReferenceID IN (";
-        $first = true;
-        foreach($values as $value){
-            if($first === true){
-                $sql .= "'".$value."'";
-                $first = false;
-            } else {
-                $sql .= ",'".$value."'";
+        try{
+            $array = [];
+            $sql = "SELECT * FROM petty_cash_type WHERE ReferenceID IN (";
+            $first = true;
+            foreach($values as $value){
+                if($first === true){
+                    $sql .= "'".$value."'";
+                    $first = false;
+                } else {
+                    $sql .= ",'".$value."'";
+                }
             }
-        }
-        $sql .= ")";
-        $result = $connection->query($sql);
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                array_push($array, [$row["ReferenceID"], $row["Type"], $row["Total"]]);
+            $sql .= ")";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, [$row["ReferenceID"], $row["Type"], $row["Total"]]);
+                }
             }
+            $connection->close();
+            return $array;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $array;
     }
 }
 
@@ -442,21 +498,25 @@ function get_pettycash_in_type($values){
 function get_pettycash_into_month($start, $end){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $array = [];
-        $sql = $connection->prepare("SELECT ID, Date, Total FROM accounting_out WHERE TYPE = 'Petty Cash' AND Date >= ? AND Date <= ?");
-        $sql->bind_param('ss', $start, $end);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Total']]);
+        try{
+            $array = [];
+            $sql = $connection->prepare("SELECT ID, Date, Total FROM accounting_out WHERE TYPE = 'Petty Cash' AND Date >= ? AND Date <= ?");
+            $sql->bind_param('ss', $start, $end);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, [$row['ID'], date('d/m/Y',strtotime($row['Date'])), $row['Total']]);
+                }
             }
+            $sql->close();
+            $connection->close();
+            return $array;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $sql->close();
-        $connection->close();
-        return $array;
     }
 }
 
@@ -464,40 +524,44 @@ function get_pettycash_into_month($start, $end){
 function get_pettycash_in_before($date){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $balance = 0;
-        $sql = "SELECT Balance FROM balances WHERE Type = 'Petty Cash'";
-        $result = $connection->query($sql);
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $balance = $row['Balance'];
+        try{
+            $balance = 0;
+            $sql = "SELECT Balance FROM balances WHERE Type = 'Petty Cash'";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $balance = $row['Balance'];
+                }
             }
-        }
-        $totalIn = 0;
-        $sql = $connection->prepare("SELECT Total FROM accounting_out WHERE Type = 'Petty Cash' AND Date < ?");
-        $sql->bind_param('s', $date);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $totalIn += $row['Total'];
+            $totalIn = 0;
+            $sql = $connection->prepare("SELECT Total FROM accounting_out WHERE Type = 'Petty Cash' AND Date < ?");
+            $sql->bind_param('s', $date);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $totalIn += $row['Total'];
+                }
             }
-        }
-        $sql->close();
-        $totalOut = 0;
-        $sql = $connection->prepare("SELECT Total FROM petty_cash_id WHERE Date < ?");
-        $sql->bind_param('s', $date);
-        $sql->execute();
-        $result = $sql->get_result();
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $totalOut += $row['Total'];
+            $sql->close();
+            $totalOut = 0;
+            $sql = $connection->prepare("SELECT Total FROM petty_cash_id WHERE Date < ?");
+            $sql->bind_param('s', $date);
+            $sql->execute();
+            $result = $sql->get_result();
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $totalOut += $row['Total'];
+                }
             }
+            $sql->close();
+            $connection->close();
+            return (($balance + $totalIn) - $totalOut);
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $sql->close();
-        $connection->close();
-        return (($balance + $totalIn) - $totalOut);
     }
 }
 
@@ -505,50 +569,54 @@ function get_pettycash_in_before($date){
 function get_pc_yearoverview_ym_data($year){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $finArray = [];
-        $m = 4;
-        $next = false;
-        for($i = 0; $i < 12; $i++){
-            $tm1 = "04";
-            $tm2 = "05";
-            if($m == 13){
-                $m = 1;
-                $next = true;
-            }
-            $ty1 = ($next) ? $year+1 : $year;
-            $ty2 = ($next) ? $year+1 : $year;
-            if($m < 9){
-                $tm1 = "0".$m;               
-                $tm2 = "0".$m+1;
-            } elseif($m === 9){
-                $tm1 = "0".$m;
-                $tm2 = "10";
-            } elseif($m === 12){
-                $tm1 = $m;
-                $tm2 = '01';
-                $ty2 = $year+1;
-            } elseif($m > 9){
-                $tm1 = $m;
-                $tm2 = $m+1;
-            }
-            $sql = "SELECT petty_cash_id.Total, petty_cash_type.Type FROM petty_cash_id INNER JOIN petty_cash_type ON petty_cash_id.ReferenceID = petty_cash_type.ReferenceID WHERE petty_cash_id.Date >= '".$ty1."-".$tm1."-01' AND petty_cash_id.Date < '".$ty2."-".$tm2."-01'";
-            $result = $connection->query($sql);
-            $array = [];
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    if(!isset($array[$row['Type']])){
-                        $array[$row['Type']] = 0;
-                    }
-                    $array[$row['Type']] += $row['Total'];
+        try{
+            $finArray = [];
+            $m = 4;
+            $next = false;
+            for($i = 0; $i < 12; $i++){
+                $tm1 = "04";
+                $tm2 = "05";
+                if($m == 13){
+                    $m = 1;
+                    $next = true;
                 }
+                $ty1 = ($next) ? $year+1 : $year;
+                $ty2 = ($next) ? $year+1 : $year;
+                if($m < 9){
+                    $tm1 = "0".$m;               
+                    $tm2 = "0".$m+1;
+                } elseif($m === 9){
+                    $tm1 = "0".$m;
+                    $tm2 = "10";
+                } elseif($m === 12){
+                    $tm1 = $m;
+                    $tm2 = '01';
+                    $ty2 = $year+1;
+                } elseif($m > 9){
+                    $tm1 = $m;
+                    $tm2 = $m+1;
+                }
+                $sql = "SELECT petty_cash_id.Total, petty_cash_type.Type FROM petty_cash_id INNER JOIN petty_cash_type ON petty_cash_id.ReferenceID = petty_cash_type.ReferenceID WHERE petty_cash_id.Date >= '".$ty1."-".$tm1."-01' AND petty_cash_id.Date < '".$ty2."-".$tm2."-01'";
+                $result = $connection->query($sql);
+                $array = [];
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        if(!isset($array[$row['Type']])){
+                            $array[$row['Type']] = 0;
+                        }
+                        $array[$row['Type']] += $row['Total'];
+                    }
+                }
+                array_push($finArray, [$ty1."-".$tm1,$array]);
+                $m++;
             }
-            array_push($finArray, [$ty1."-".$tm1,$array]);
-            $m++;
+            $connection->close();
+            return $finArray;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $finArray;
     }
 }
 
@@ -556,50 +624,54 @@ function get_pc_yearoverview_ym_data($year){
 function get_ac_yearoverview_ym_data($year){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $finArray = [];
-        $m = 4;
-        $next = false;
-        for($i = 0; $i < 12; $i++){
-            $tm1 = "04";
-            $tm2 = "05";
-            if($m == 13){
-                $m = 1;
-                $next = true;
-            }
-            $ty1 = ($next) ? $year+1 : $year;
-            $ty2 = ($next) ? $year+1 : $year;
-            if($m < 9){
-                $tm1 = "0".$m;               
-                $tm2 = "0".$m+1;
-            } elseif($m === 9){
-                $tm1 = "0".$m;
-                $tm2 = "10";
-            } elseif($m === 12){
-                $tm1 = $m;
-                $tm2 = '01';
-                $ty2 = $year+1;
-            } elseif($m > 9){
-                $tm1 = $m;
-                $tm2 = $m+1;
-            }
-            $sql = "SELECT Total, Type FROM accounting_out WHERE Date >= '".$ty1."-".$tm1."-01' AND Date < '".$ty2."-".$tm2."-01'";
-            $result = $connection->query($sql);
-            $array = [];
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    if(!isset($array[$row['Type']])){
-                        $array[$row['Type']] = 0;
-                    }
-                    $array[$row['Type']] += $row['Total'];
+        try{
+            $finArray = [];
+            $m = 4;
+            $next = false;
+            for($i = 0; $i < 12; $i++){
+                $tm1 = "04";
+                $tm2 = "05";
+                if($m == 13){
+                    $m = 1;
+                    $next = true;
                 }
+                $ty1 = ($next) ? $year+1 : $year;
+                $ty2 = ($next) ? $year+1 : $year;
+                if($m < 9){
+                    $tm1 = "0".$m;               
+                    $tm2 = "0".$m+1;
+                } elseif($m === 9){
+                    $tm1 = "0".$m;
+                    $tm2 = "10";
+                } elseif($m === 12){
+                    $tm1 = $m;
+                    $tm2 = '01';
+                    $ty2 = $year+1;
+                } elseif($m > 9){
+                    $tm1 = $m;
+                    $tm2 = $m+1;
+                }
+                $sql = "SELECT Total, Type FROM accounting_out WHERE Date >= '".$ty1."-".$tm1."-01' AND Date < '".$ty2."-".$tm2."-01'";
+                $result = $connection->query($sql);
+                $array = [];
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        if(!isset($array[$row['Type']])){
+                            $array[$row['Type']] = 0;
+                        }
+                        $array[$row['Type']] += $row['Total'];
+                    }
+                }
+                array_push($finArray, [$ty1."-".$tm1,$array]);
+                $m++;
             }
-            array_push($finArray, [$ty1."-".$tm1,$array]);
-            $m++;
+            $connection->close();
+            return $finArray;
+        } catch(PDOException $e){
+            return "SQL Error";
         }
-        $connection->close();
-        return $finArray;
     }
 }
 
@@ -607,16 +679,20 @@ function get_ac_yearoverview_ym_data($year){
 function user_exists(){
     $connection = db_connect();
     if($connection->connect_error){
-        return "connection error";
+        return "Connection Error";
     } else{ 
-        $sql = 'SELECT * FROM user';
-        $result = $connection->query($sql);
-        if($result->num_rows > 0){
-            $connection->close();
-            return true;
-        } else {
-            $connection->close();
-            return false;
+        try{
+            $sql = 'SELECT * FROM user';
+            $result = $connection->query($sql);
+            if($result->num_rows > 0){
+                $connection->close();
+                return true;
+            } else {
+                $connection->close();
+                return false;
+            }
+        } catch(PDOException $e){
+            return "SQL Error";
         }
     }
 }
@@ -628,12 +704,16 @@ function create_user($array){
         if($connection->connect_error){
             return false;
         } else{ 
-            $sql = $connection->prepare("INSERT INTO user (username, password, firstname, lastname, email) VALUES (?, ?, ?, ?, ?)");
-            $sql->bind_param('sssss', $array[0], $array[1], $array[2], $array[3], $array[4]);
-            $sql->execute();
-            $sql->close();
-            $connection->close();
-            return true;
+            try{
+                $sql = $connection->prepare("INSERT INTO user (username, password, firstname, lastname, email) VALUES (?, ?, ?, ?, ?)");
+                $sql->bind_param('sssss', $array[0], $array[1], $array[2], $array[3], $array[4]);
+                $sql->execute();
+                $sql->close();
+                $connection->close();
+                return true;
+            } catch(PDOException $e){
+                return false;
+            }
         }
     } else {
         return false;
@@ -647,26 +727,30 @@ function login_user($array){
         if($connection->connect_error){
             return false;
         } else{ 
-            $sql = $connection->prepare('SELECT password FROM user WHERE username = ?');
-            $sql->bind_param('s', $array[0]);
-            $sql->execute();
-            $result = $sql->get_result();
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    if(password_verify($array[1], $row['password'])){
-                        $sql->close();
-                        $connection->close();
-                        return true;
-                    } else {
-                        $sql->close();
-                        $connection->close();
-                        return false;
+            try{
+                $sql = $connection->prepare('SELECT password FROM user WHERE username = ?');
+                $sql->bind_param('s', $array[0]);
+                $sql->execute();
+                $result = $sql->get_result();
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        if(password_verify($array[1], $row['password'])){
+                            $sql->close();
+                            $connection->close();
+                            return true;
+                        } else {
+                            $sql->close();
+                            $connection->close();
+                            return false;
+                        }
                     }
+                    return true;
+                } else {
+                    $sql->close();
+                    $connection->close();
+                    return false;
                 }
-                return true;
-            } else {
-                $sql->close();
-                $connection->close();
+            } catch(PDOException $e){
                 return false;
             }
         }
