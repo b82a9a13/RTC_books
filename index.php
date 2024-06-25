@@ -2,6 +2,7 @@
 include("./require_login.php");
 //Define the current year for the tax year
 $taxYear = (date("n") >= 4) ? date("Y") : date("Y")-1;
+$minYear = 2023;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +22,7 @@ $taxYear = (date("n") >= 4) ? date("Y") : date("Y")-1;
     <?php //Section for selecting what years data to display for the page ?>
     <div class="section text-center">
         <h2 class="text-center">Year</h2>
-        <input id="year input" type="number" min="2023" max="<?php echo $taxYear; ?>" id="year" name="year" value="<?php echo $taxYear; ?>" onchange="change_year()"><br>
+        <input id="year input" type="number" min="<?php echo $minYear; ?>" max="<?php echo $taxYear; ?>" id="year" name="year" value="<?php echo $taxYear; ?>" onchange="change_year()"><br>
     </div>
     <br>
     <?php //Section for displaying data in tables ?>
@@ -212,7 +213,38 @@ $taxYear = (date("n") >= 4) ? date("Y") : date("Y")-1;
     <?php //Section for adding the first bank balance and the first petty cash balance. It is also used to create the initial bank balance and petty cash balance for the year?>
     <div id="balances" class="section">
         <h2 class="text-center">Balances</h2>
-        <div class="inner-div"></div>
+        <div class="inner-div">
+            <div class="div-border">
+                <p class="title-p">Bank Balance</p>
+                <form action="" id="bank_balance_form">
+                    <div class="input-div">
+                        <p class="input-p">Year:</p>
+                        <input id="bank_balance_year" class="input-input" type="number" min="<?php echo $minYear; ?>" max="<?php echo $taxYear; ?>" id="year" name="year" value="<?php echo $taxYear; ?>" onchange="changed_balance_year('bank_balance')">
+                    </div>
+                    <div class="input-div">
+                        <p class="input-p">Balance: £</p>
+                        <input id="bank_balance_number" type="number" class="input-input">
+                    </div>
+                    <p style="display: none;font-size:25px;" id="bank_balance_form_error"></p>
+                    <button type="submit" class="input-btn btn-primary btn">Submit</button>
+                </form>
+            </div>
+            <div class="div-border">
+                <p class="title-p">Petty Cash Balance</p>
+                <form action="" id="petty_cash_form">
+                    <div class="input-div">
+                        <p class="input-p">Year:</p>
+                        <input id="petty_cash_year" class="input-input" type="number" min="<?php echo $minYear; ?>" max="<?php echo $taxYear; ?>" id="year" name="year" value="<?php echo $taxYear; ?>" onchange="changed_balance_year('petty_cash')">
+                    </div>
+                    <div class="input-div">
+                        <p class="input-p">Balance: £</p>
+                        <input id="petty_cash_number" type="number" class="input-input">
+                    </div>
+                    <p style="display: none;font-size:25px;" id="petty_cash_form_error"></p>
+                    <button type="submit" class="input-btn btn-primary btn">Submit</button>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 <?php //Include JavaScript ?>
