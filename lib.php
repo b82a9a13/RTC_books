@@ -30,6 +30,7 @@ function query_table($table, $params){
             $connection->close();
             return $array;
         } catch(PDOexception $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -99,6 +100,7 @@ function add_invoice($date, $supplier, $reference, $total){
                 return "Exists";
             }
         } catch(PDOexception $e){
+            $connection->close();
             return "SQL error";
         }
     }
@@ -124,6 +126,7 @@ function total_money_input(){
             $connection->close();
             return $rowresult;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -149,6 +152,7 @@ function total_money_output(){
             $connection->close();
             return $rowresult;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -174,6 +178,7 @@ function initial_bank_balance(){
             $connection->close();
             return $rowresult;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -200,6 +205,7 @@ function get_accounting_in_month($start, $end){
             $connection->close();
             return $array;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -226,6 +232,7 @@ function get_accounting_out_month($start, $end){
             $connection->close();
             return $array;
         } catch(Exception $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -282,6 +289,7 @@ function get_accounting_cf_month($start, $end){
                 return $total;
             }
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -305,6 +313,7 @@ function get_pettycash_in(){
             $connection->close();
             return $total;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -328,6 +337,7 @@ function get_pettycash_out(){
             $connection->close();
             return $total;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -353,6 +363,7 @@ function initial_pettycash_balance(){
             $connection->close();
             return $rowresult;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -394,6 +405,7 @@ function add_receipt($date, $item, $total, $type){
                 return "Exists";
             }
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -430,6 +442,7 @@ function add_banktransaction($date, $supplier, $total, $type){
                 return "Exists";
             }
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -456,6 +469,7 @@ function get_pettycash_in_month($start, $end){
             $connection->close();
             return $array;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -489,6 +503,7 @@ function get_pettycash_in_type($values){
             $connection->close();
             return $array;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -515,6 +530,7 @@ function get_pettycash_into_month($start, $end){
             $connection->close();
             return $array;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -560,6 +576,7 @@ function get_pettycash_in_before($date){
             $connection->close();
             return (($balance + $totalIn) - $totalOut);
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -615,6 +632,7 @@ function get_pc_yearoverview_ym_data($year){
             $connection->close();
             return $finArray;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -670,6 +688,7 @@ function get_ac_yearoverview_ym_data($year){
             $connection->close();
             return $finArray;
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -692,6 +711,7 @@ function user_exists(){
                 return false;
             }
         } catch(PDOException $e){
+            $connection->close();
             return "SQL Error";
         }
     }
@@ -712,6 +732,7 @@ function create_user($array){
                 $connection->close();
                 return true;
             } catch(PDOException $e){
+                $connection->close();
                 return false;
             }
         }
@@ -751,10 +772,84 @@ function login_user($array){
                     return false;
                 }
             } catch(PDOException $e){
+                $connection->close();
                 return false;
             }
         }
     } else {
         return false;
+    }
+}
+
+//Get the intial balance for a specific type and year
+function get_balance($type, $year){
+    if(($type == 'Bank Balance' || $type == "Petty Cash") && $year >= 2023 && $year <= date("Y")){
+        $connection = db_connect();
+        if($connection->connect_error){
+            return 'Connection Error';
+        } else {
+            try{
+                $sql = $connection->prepare("SELECT Balance FROM balances WHERE Type = ? AND Date = ?");
+                $year = strval($year)."-04-02";
+                $sql->bind_param('ss', $type, $year);
+                $sql->execute();
+                $result = $sql->get_result();
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc()){
+                        $balance = $row['Balance'];
+                        $sql->close();
+                        $connection->close();
+                        return $balance;
+                    }
+                } else {
+                    $sql->close();
+                    $connection->close();
+                    return 0;
+                }
+            } catch(PDOexception $e){
+                $connection->close();
+                return "SQL Error";
+            }
+        }
+    } else {
+        return 'Invalid Parameters';
+    }
+}
+
+//Add balance for a specific type and year
+function add_balance($type, $year, $balance){
+    if(($type == 'Bank Balance' || $type == 'Petty Cash') && $year >= 2023 && $year <= date("Y")){
+        $connection = db_connect();
+        if($connection->connect_error){
+            return 'Connection Error';
+        } else {
+            try{
+                $sql = $connection->prepare("SELECT ID FROM balances WHERE Type = ? AND Date = ? LIMIT 1");
+                $year = strval($year)."-04-02";
+                $sql->bind_param('ss', $type, $year);
+                $sql->execute();
+                $results = $sql->get_result();
+                if($results->num_rows > 0){
+                    $sql = $connection->prepare("UPDATE balances SET Balance = ? WHERE Date = ?");
+                    $sql->bind_param('ss', $balance, $year);
+                } else{
+                    $sql = "SELECT MAX(ID) AS ID FROM balances";
+                    $result = $connection->query($sql);
+                    while($row = $result->fetch_assoc()){
+                        $newID = $row['ID']+1;
+                    }
+                    $sql = $connection->prepare("INSERT INTO balances (ID, Type, Date, Balance) VALUES (?, ?, ?, ?)");
+                    $sql->bind_param('issd', $newID, $type, $year, $balance);
+                }
+                $sql->execute();
+                $connection->close();
+                return "Success";
+            } catch(PDOexception $e){
+                $connection->close();
+                return "SQL Error";
+            }
+        }
+    } else {
+        return 'Invalid Parameters';
     }
 }

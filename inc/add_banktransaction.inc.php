@@ -10,34 +10,38 @@ if(isset($_POST['date']) && isset($_POST['supplier']) && isset($_POST['total']) 
     $supplier = $_POST['supplier'];
     $total = $_POST['total'];
     $type = $_POST['type'];
-    $errors = [];
+    $response = [];
     if(!empty($date)){
         $date = strtotime($date);
         if(!preg_match("/^[0-9]*$/", $date) || empty($date)){
-            $errors['date'] = 'Invalid date';
+            $response['date'] = 'Invalid date';
         }
     } else {
-        $errors['date'] = 'No date';
+        $response['date'] = 'No date';
     }
     if(empty($supplier)){
-        $errors['supplier'] = 'No supplier';
+        $response['supplier'] = 'No supplier';
     } elseif(!empty($supplier) && !preg_match("/^[a-z A-Z0-9]*$/", $supplier)){
-        $errors['supplier'] = 'Invalid supplier values: '.preg_replace("/[a-z A-Z0-9]/",'',$supplier);
+        $response['supplier'] = 'Invalid supplier values: '.preg_replace("/[a-z A-Z0-9]/",'',$supplier);
     }
     if(empty($total)){
-        $errors['total'] = 'No total';
+        $response['total'] = 'No total';
     } elseif(!empty($total) && !preg_match("/^[0-9.]*$/", $total)){
-        $errors['total'] = 'Invalid total values: '.preg_replace("/[0-9.]/",'',$total);
+        $response['total'] = 'Invalid total values: '.preg_replace("/[0-9.]/",'',$total);
     }
     $typeOpt = ['National Insurance','Tool Hire','Drawings','Petty Cash','Travel and Motor Exp','Phone','Protective Clothing','Material','Sundry'];
     if(!empty($type) && !in_array($type, $typeOpt) || empty($type)){
-        $errors['type'] = 'Invalid type';
+        $response['type'] = 'Invalid type';
     }
-    if($errors === []){
-        add_banktransaction($date, $supplier, $total, $type);
-        $success['success'] = true;
-        echo(json_encode($success));
-    } elseif($errors != []){
-        echo(json_encode($errors));
+    if($response === []){
+        $return = add_banktransaction($date, $supplier, $total, $type);
+        if($return === 'Success'){
+            $response['success'] = true;
+        } else {
+            $response['error'] = $return;
+        }
+        echo json_encode($response);
+    } elseif($response != []){
+        echo json_encode($response);
     }
 }
