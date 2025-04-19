@@ -1,7 +1,7 @@
 <?php
 if(session_status() !== PHP_SESSION_ACTIVE){session_start();}
 if(isset($_SESSION['spammed'])){
-    if($_SESSION['spammed'] > 4){
+    if($_SESSION['spammed'] > 10){
         exit();
     }
 }
