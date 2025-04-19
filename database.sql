@@ -1,5 +1,7 @@
 CREATE DATABASE books;
 
+USE books;
+
 CREATE TABLE accounting_in (
     ID int(11),
     Date date,
