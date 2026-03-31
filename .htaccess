@@ -1,0 +1,4 @@
+Options -Indexes
+RedirectMatch 404 /\.git
+RedirectMatch 404 (database\.sql|README\.md|LICENSE)$
+RedirectMatch 404 /\.htaccess$
