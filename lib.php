@@ -15,7 +15,7 @@ function query_table($table, $params){
         return "Connection Error";
     } else{ 
         try{
-            $sql = "SELECT * FROM ".$table." ORDER BY ID ASC";
+            $sql = "SELECT * FROM ".$table." ORDER BY ".$params[0]." ASC";
             $result = $connection->query($sql);
             $array = [];
             if($result->num_rows > 0){
